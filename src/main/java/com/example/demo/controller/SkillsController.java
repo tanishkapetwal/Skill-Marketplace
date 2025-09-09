@@ -1,30 +1,44 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Seller;
 import com.example.demo.model.Skills;
 import com.example.demo.service.SkillsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/skills")
 public class SkillsController {
 
-    @Autowired
-    private SkillsService service;
+    private final SkillsService skillsService;
 
-//    @GetMapping(value={"/", "/{id}"})
-//    public List<Skills>  getSkills(@PathVariable(required = false) Integer id){
-//        if(id!=null) return service.getSkillsById(id);
-//        else return service.getSkills();
-//    }
-//
-//    @PostMapping("/add")
-//    public void addSkills(@RequestBody Skills skills){
-//        service.addSkills(skills);
-//    }
+    public SkillsController(SkillsService skillsService) {
+        this.skillsService = skillsService;
+    }
 
+    @GetMapping
+    public List<Skills> getAllSkills() {
+        return skillsService.getAllSkills();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Skills> getSkillById(@PathVariable int id) {
+        return skillsService.getSkillById(id);
+    }
+
+    @PostMapping
+    public Skills createSkill(@RequestBody Skills skill) {
+        return skillsService.createSkill(skill);
+    }
+
+    @PutMapping("/{id}")
+    public Skills updateSkill(@PathVariable int id, @RequestBody Skills skill) {
+        return skillsService.updateSkill(id, skill);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteSkill(@PathVariable int id) {
+        skillsService.deleteSkill(id);
+    }
 }

@@ -6,9 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,14 +18,7 @@ import java.util.List;
 @Builder
 public class Customer {
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Customer() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = createdAt;
-    }
+    public Customer() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,13 +38,15 @@ public class Customer {
             message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character"
     )
     private String password;
-    @CreatedDate
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
-    @LastModifiedDate
+
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Orders> order;
 
 

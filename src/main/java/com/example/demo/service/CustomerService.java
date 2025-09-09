@@ -6,19 +6,17 @@ import com.example.demo.dto.CustomerDTO;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Orders;
 import com.example.demo.model.Skills;
+import com.example.demo.model.SkillsListing;
 
-import com.example.demo.model.type.Status;
 import com.example.demo.repository.CustomerRepo;
 import com.example.demo.repository.OrdersRepo;
 import com.example.demo.repository.SkillsListingRepo;
 import com.example.demo.repository.SkillsRepo;
-import jakarta.persistence.criteria.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,7 +74,7 @@ public class CustomerService {
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
         orders.setCustomer(customerrepo.findById(custid).orElseThrow(RuntimeException::new));
-        orders.setSkillsListing(Collections.singletonList(skillslistingrepo.findById(listingId).orElseThrow(RuntimeException::new)));
+        orders.setSkillsListing((SkillsListing) Collections.singletonList(skillslistingrepo.findById(listingId).orElseThrow(RuntimeException::new)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
         ordersrepo.save(orders);
