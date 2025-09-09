@@ -2,11 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.dto.AllOrderResponse;
 import com.example.demo.dto.CreateOrderDTO;
-import com.example.demo.dto.CustomerDTO;
+import com.example.demo.dto.CustomerRequestDTO;
+import com.example.demo.dto.CustomerResponseDto;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Orders;
 import com.example.demo.model.Skills;
-import com.example.demo.model.SkillsListing;
 
 import com.example.demo.repository.CustomerRepo;
 import com.example.demo.repository.OrdersRepo;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static com.example.demo.model.type.Status.PENDING;
@@ -35,16 +34,19 @@ public class CustomerService {
     private OrdersRepo ordersrepo;
     @Autowired
     private ModelMapper modelmapper;
-    public List<Customer> getCustomers() {
-        return customerrepo.findAll();
+    public List<CustomerResponseDto> getCustomers() {
+        return (customerrepo.findAll().stream().map
+                (customer -> modelmapper.map(customer, CustomerResponseDto.class)).toList());
 
     }
 
-    public Customer getCustomerbyId(Integer id) {
-        return customerrepo.findById(id).orElse(new Customer());
+    public CustomerResponseDto getCustomerbyId(Integer id) {
+
+        return modelmapper.map(customerrepo.findById(id), CustomerResponseDto.class);
+
     }
 
-    public Customer addCustomers(CustomerDTO customer) {
+    public Customer addCustomers(CustomerRequestDTO customer) {
 //        Customer cust = Customer.builder().name(customer.getName()).email(customer.getEmail()).
 //                phone(customer.getPhone()).password(customer.getPassword()).createdAt(LocalDateTime.now()).build();
 //        cust.setName(customer.getName());
@@ -74,15 +76,16 @@ public class CustomerService {
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
         orders.setCustomer(customerrepo.findById(custid).orElseThrow(RuntimeException::new));
-        orders.setSkillsListing((SkillsListing) Collections.singletonList(skillslistingrepo.findById(listingId).orElseThrow(RuntimeException::new)));
+        orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(RuntimeException::new));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
         ordersrepo.save(orders);
     }
 
-
     public List<AllOrderResponse> getallOrders(int id) {
         Customer customer=customerrepo.findById(id).orElse(null);
+
+
 
         List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
                                                     .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();
