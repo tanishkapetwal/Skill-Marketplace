@@ -24,11 +24,18 @@ public class SkillsListing {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @ManyToMany
-    @JoinTable(
-            name = "orders_skillsListing",
-            joinColumns = @JoinColumn(name = "listing_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id")
-    )
+    @OneToMany(mappedBy = "skillslisting")
     private List<Orders> orders;
+
+
+
+
+
+
+//    @JoinTable(
+//            name = "orders_skillsListing",
+//            joinColumns = @JoinColumn(name = "listing_id"),
+//            inverseJoinColumns = @JoinColumn(name = "order_id")
+//    )
+    // private List<Orders> orders;
 }

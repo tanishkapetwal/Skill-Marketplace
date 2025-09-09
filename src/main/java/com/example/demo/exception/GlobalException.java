@@ -1,0 +1,18 @@
+package com.example.demo.exception;
+
+import com.example.demo.dto.ApiError;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalException {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> Exception(Exception ex){
+        ApiError apiError = new ApiError(ex.getMessage(), HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<ApiError>(apiError, apiError.getHttpStatus());
+
+    }
+}

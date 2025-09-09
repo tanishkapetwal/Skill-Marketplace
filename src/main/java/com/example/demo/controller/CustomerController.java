@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AllOrderResponse;
-import com.example.demo.dto.CreateOrderDTO;
-import com.example.demo.dto.CustomerDTO;
+import com.example.demo.dto.*;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Orders;
 import com.example.demo.model.Skills;
+import com.example.demo.security.JWTService;
+import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,15 +20,15 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
     private CustomerService service;
 
-    @GetMapping("")
-    public List<Customer> getCustomers(Model model){
-       return service.getCustomers();
-    }
-
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable Integer id){
+    public CustomerResponseDto getCustomerById(@PathVariable Integer id){
         return service.getCustomerbyId(id);
     }
 
@@ -53,9 +53,21 @@ public class CustomerController {
     public ResponseEntity<List<AllOrderResponse>> getallOrders(@PathVariable int id){
         return new ResponseEntity<>(service.getallOrders(id), HttpStatus.OK);
     }
-    @PostMapping("/add")
-    public ResponseEntity<Customer> addCustomers(@RequestBody CustomerDTO customer){
-        return new ResponseEntity<>(service.addCustomers(customer), HttpStatus.OK) ;
+    @PostMapping("/signup")
+    public ResponseEntity<Customer> addCustomers(@RequestBody RegisterUserDto registerUserDto){
+        Customer registeredUser = authenticationService.signup(registerUserDto);
+
+        return ResponseEntity.ok(registeredUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+        Customer authenticatedUser = authenticationService.authenticate(loginUserDto);
+
+        String jwtToken = jwtService.generateToken(authenticatedUser);
+        LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
+
+        return ResponseEntity.ok(loginResponse);
     }
 
     @DeleteMapping(value = {"/delete/{id}"})
