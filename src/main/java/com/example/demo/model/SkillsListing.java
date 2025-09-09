@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,13 @@ public class SkillsListing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull
     private String title;
+    @NotNull
     private String description;
+    @NotNull     //constraint
     private float price;
+    @NotNull          //constraint
     private double time;
     private int skillRating;
 
