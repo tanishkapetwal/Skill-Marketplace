@@ -38,13 +38,15 @@ public class Seller implements UserDetails {
     @NotNull
     @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
     private String phone;
-    @NotBlank(message = "Password Cannot Be Empty")
-    @Size(min=8,max=20,message = "Password must be between 8 and 10 characters")
+
+    @Column(length = 60, nullable = false)
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",
 
             message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character"
     )
+
     private String password;
+
     private String bio;
     private int rating;
     @CreationTimestamp

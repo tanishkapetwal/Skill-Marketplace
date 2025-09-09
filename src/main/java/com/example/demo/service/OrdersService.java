@@ -36,7 +36,7 @@ public class OrdersService {
             order.setStatus(orderDetails.getStatus());
             order.setOrderDate(orderDetails.getOrderDate());
             order.setCustomer(orderDetails.getCustomer());
-            order.setSkillsListing(orderDetails.getSkillsListing());
+            order.setSkillslisting(orderDetails.getSkillslisting());
             return ordersRepo.save(order);
         }).orElseThrow(() -> new RuntimeException("Order not found"));
     }

@@ -20,6 +20,7 @@ public class ApplicationConfiguration {
     private final CustomerRepo customerRepo;
     private final SellerRepo sellerRepo;
 
+    @Autowired
     public ApplicationConfiguration(CustomerRepo customerRepo, SellerRepo sellerRepo) {
         this.customerRepo = customerRepo;
         this.sellerRepo = sellerRepo;
