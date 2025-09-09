@@ -33,8 +33,9 @@ public class Orders {
     @JoinColumn(name = "cust_id")
     private Customer customer;
 
-    @ManyToMany (mappedBy = "orders", cascade = CascadeType.ALL)
-    private List<SkillsListing> skillsListing;
+    @ManyToOne
+    @JoinColumn(name = "skills_listing_id") // Or whatever your foreign key column is
+    private SkillsListing skillslisting;
 
 }
 
