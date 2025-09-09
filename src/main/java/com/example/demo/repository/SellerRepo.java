@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface SellerRepo extends JpaRepository<Seller, Integer>{
     Optional<Seller> findByEmail(String Email);
+    Optional<Seller> findByName(String name);
 }

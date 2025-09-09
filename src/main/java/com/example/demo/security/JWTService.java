@@ -32,9 +32,10 @@ public class JWTService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,int usedId) {
         Map<String, Object>claims = new HashMap<>();
         claims.put("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        claims.put("id",usedId);
         return generateToken(claims, userDetails);
 //        return generateToken(new HashMap<>(), userDetails);
     }

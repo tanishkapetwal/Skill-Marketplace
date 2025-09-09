@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,15 @@ public class AuthenticationService {
 //        return customerRepo.findByEmail(input.getEmail()).orElseThrow();
     }
 
+    public int fetchCustomerId(UserDetails user){
+        Customer customer = customerRepo.findByEmail(user.getUsername()).orElseThrow(RuntimeException::new);
+        return customer.getId();
+
+    }
+    public int fetchSellerId(UserDetails user){
+        Seller seller = sellerRepo.findByEmail(user.getUsername()).orElseThrow(RuntimeException::new);
+        return seller.getId();
+    }
     public Seller signupSeller(RegisterSellerDto input) {
 
         input.setPassword(passwordEncoder.encode(input.getPassword()));

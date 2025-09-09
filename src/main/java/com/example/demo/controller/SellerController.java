@@ -8,6 +8,8 @@ import com.example.demo.model.Customer;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,19 +26,18 @@ public class SellerController {
 
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
     private JWTService jwtService;
     @Autowired
     private SellerService service;
 
-    @GetMapping(value={"/", "{id}"})
-    public List<Seller> getSeller(@PathVariable (required = false) Integer id){
-        if(id!= null)return service.getSellerById(id);
-        else return service.getSeller();
-    }
+    @GetMapping(value={"/"})
+    public List<Seller> getSeller(HttpServletRequest request){
+        String authHeader= request.getHeader("Authorization");
+        String token = authHeader.split(" ")[1];
+        int id = jwtService.extractClaim(token,claims -> claims.get("id", Integer.class));
+        return service.getSellerById(id);
 
-    @PostMapping("/add")
-    public void addSeller(@RequestBody Seller seller){
-        service.addSeller(seller);
     }
 
     @DeleteMapping("/delete")
@@ -56,7 +57,9 @@ public class SellerController {
         Authentication authentication = authenticationService.authenticate(loginUserDto);
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        int userId = authenticationService.fetchSellerId(authenticatedUser);
+        System.out.println(userId);
+        String jwtToken = jwtService.generateToken(authenticatedUser,userId);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
 
         return ResponseEntity.ok(loginResponse);
