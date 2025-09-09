@@ -37,6 +37,8 @@ public class SkillsListing {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @OneToMany(mappedBy = "skillsListing", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "skillslisting", cascade = CascadeType.ALL)
     private List<Orders> orders;
+
 }

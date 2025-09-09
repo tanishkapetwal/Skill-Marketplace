@@ -33,8 +33,8 @@ public class Orders {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "skills_listing_id")
-    private SkillsListing skillsListing;
 
+    @JoinColumn(name = "skills_listing_id") // Or whatever your foreign key column is
+    private SkillsListing skillslisting;
 }
 
