@@ -9,8 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+
 
 
 @Setter
@@ -30,12 +29,12 @@ public class Orders {
     private LocalDate orderDate;
 
     @ManyToOne
-    @JoinColumn(name = "cust_id")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @ManyToOne
+
     @JoinColumn(name = "skills_listing_id") // Or whatever your foreign key column is
     private SkillsListing skillslisting;
-
 }
 

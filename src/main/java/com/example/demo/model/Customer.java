@@ -8,8 +8,10 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -22,7 +24,7 @@ import java.util.List;
 @Builder
 public class Customer implements UserDetails {
 
-    public Customer(){}
+    public Customer() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +53,8 @@ public class Customer implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Orders> order;
 
 
