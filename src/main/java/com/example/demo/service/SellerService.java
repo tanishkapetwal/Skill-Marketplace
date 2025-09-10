@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateListingDTO;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Seller;
 import com.example.demo.model.SkillsListing;
 import com.example.demo.repository.SellerRepo;
@@ -44,8 +45,8 @@ public class SellerService {
         SkillsListing skillsListing=new SkillsListing();
 
         skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
-        skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(RuntimeException::new));
-        skillsListing.setSeller(sellerRepo.findById(sellerId).orElseThrow(RuntimeException::new));
+        skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + skillId)));
+        skillsListing.setSeller(sellerRepo.findById(sellerId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + sellerId)));
         skillsListing.setTitle(createListingDTO.getTitle());
         skillsListing.setDescription(createListingDTO.getDescription());
 

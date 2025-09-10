@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.LoginUserDto;
 import com.example.demo.dto.RegisterSellerDto;
 import com.example.demo.dto.RegisterUserDto;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Seller;
 import com.example.demo.repository.CustomerRepo;
@@ -63,12 +64,12 @@ public class AuthenticationService {
     }
 
     public int fetchCustomerId(UserDetails user){
-        Customer customer = customerRepo.findByEmail(user.getUsername()).orElseThrow(RuntimeException::new);
+        Customer customer = customerRepo.findByEmail(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
         return customer.getId();
 
     }
     public int fetchSellerId(UserDetails user){
-        Seller seller = sellerRepo.findByEmail(user.getUsername()).orElseThrow(RuntimeException::new);
+        Seller seller = sellerRepo.findByEmail(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
         return seller.getId();
     }
     public Seller signupSeller(RegisterSellerDto input) {

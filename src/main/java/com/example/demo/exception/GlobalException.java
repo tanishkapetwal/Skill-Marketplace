@@ -12,7 +12,11 @@ public class GlobalException {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> Exception(Exception ex){
         ApiError apiError = new ApiError(ex.getMessage(), HttpStatus.I_AM_A_TEAPOT);
-        return new ResponseEntity<ApiError>(apiError, apiError.getHttpStatus());
+        return new ResponseEntity<ApiError>(apiError, apiError.getHttpStatus());}
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleResourceNotFound(ResourceNotFoundException ex) {
+        ApiError error = new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }
