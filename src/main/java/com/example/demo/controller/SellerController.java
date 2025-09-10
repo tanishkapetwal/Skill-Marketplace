@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.LoginResponse;
-import com.example.demo.dto.LoginUserDto;
-import com.example.demo.dto.RegisterSellerDto;
-import com.example.demo.dto.RegisterUserDto;
+import com.example.demo.dto.*;
 import com.example.demo.model.Customer;
+import com.example.demo.model.SkillsListing;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
@@ -31,6 +29,7 @@ public class SellerController {
     private JWTService jwtService;
     @Autowired
     private SellerService service;
+    int userId;
 
     @GetMapping(value={"/"})
     public List<Seller> getSeller(HttpServletRequest request){
@@ -58,12 +57,20 @@ public class SellerController {
         Authentication authentication = authenticationService.authenticate(loginUserDto);
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
-        int userId = authenticationService.fetchSellerId(authenticatedUser);
+        userId = authenticationService.fetchSellerId(authenticatedUser);
         System.out.println(userId);
         String jwtToken = jwtService.generateToken(authenticatedUser,userId);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
 
         return ResponseEntity.ok(loginResponse);
     }
+    
+    @PostMapping("/add-to-listing/{skillId}")
+    public ResponseEntity<SkillsListing> addSkillsListing(@RequestBody CreateListingDTO createListingDTO, @PathVariable int skillId){
+
+
+        service.addSkillsListing(skillId, createListingDTO, userId);
+        return ResponseEntity.ok().build();}
+
 
 }
