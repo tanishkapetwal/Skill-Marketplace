@@ -1,10 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateListingDTO;
-
 import com.example.demo.dto.SkillsResponseDTO;
-
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Seller;
 import com.example.demo.model.Skills;
 import com.example.demo.model.SkillsListing;
