@@ -47,7 +47,7 @@ public class CustomerController {
     }
 
     @GetMapping("/skills")
-    public ResponseEntity<List<SkillsListing>> getallskills(){
+    public ResponseEntity<List<SkillsListingDTO>> getallskills(){
         return new ResponseEntity<>(service.getallskills(), HttpStatus.OK);
     }
 
