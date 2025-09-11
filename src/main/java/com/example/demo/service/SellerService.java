@@ -1,12 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CreateListingDTO;
-import com.example.demo.dto.SellerOrdersDTO;
-import com.example.demo.dto.SkillsResponseDTO;
-import com.example.demo.model.Orders;
-import com.example.demo.model.SkillsListing;
+import com.example.demo.dto.*;
+import com.example.demo.model.*;
 
-import com.example.demo.model.User;
 import com.example.demo.model.type.Status;
 import com.example.demo.repository.*;
 
@@ -65,7 +61,14 @@ public class SellerService {
 //        return skillsRepo.findAll();
 
     }
+    public Seller addSeller(RegisterSellerDto registerSeller) {
 
+        Seller seller = modelmapper.map(registerSeller, Seller.class);
+        return sellerRepo.save(seller);
+    }
+    public void deleteSeller(Integer id) {
+        sellerRepo.deleteById(id);
+    }
     public List<SellerOrdersDTO> allOrderRequest(int userId) {
         int seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow().getId()).orElseThrow().getId();
 
