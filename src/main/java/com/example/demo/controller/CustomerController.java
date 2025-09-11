@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.model.Customer;
 import com.example.demo.model.Orders;
 import com.example.demo.model.Skills;
+import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.CustomerService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,23 +16,33 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
+@RequiredArgsConstructor
 public class CustomerController {
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
     @Autowired
-    private JWTService jwtService;
+    private final JWTService jwtService;
 
     @Autowired
-    private CustomerService service;
+    private final CustomerService service;
 
-    @GetMapping("/{id}")
-    public CustomerResponseDto getCustomerById(@PathVariable Integer id){
-        return service.getCustomerbyId(id);
+    int userId;
+    public int getUserId(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.split(" ")[1];
+        userId = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
+       return userId;
+    }
+    @GetMapping("/")
+    public CustomerResponseDto getCustomerById(HttpServletRequest request){
+       userId = getUserId(request);
+        return service.getCustomerbyId(userId);
     }
 
     @GetMapping("/skills")
@@ -44,20 +56,21 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/{id}/order/{listingId}")
-    public ResponseEntity<Orders> createOrder(@PathVariable int id, @PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto){
-        service.createOrder(id,listingId,createorderdto);
+    @PostMapping("/order/{listingId}")
+    public ResponseEntity<Orders> createOrder(@PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto, HttpServletRequest request){
+        userId = getUserId(request);
+        service.createOrder(userId,listingId,createorderdto);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/all-orders")
-    public ResponseEntity<List<AllOrderResponse>> getallOrders(@PathVariable int id){
-        return new ResponseEntity<>(service.getallOrders(id), HttpStatus.OK);
+    @GetMapping("/all-orders")
+    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request){
+        userId = getUserId(request);
+        return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
     }
     @PostMapping("/signup")
-    public ResponseEntity<Customer> addCustomers(@RequestBody RegisterUserDto registerUserDto){
-        Customer registeredUser = authenticationService.signup(registerUserDto);
-
+    public ResponseEntity<User> addCustomers(@RequestBody RegisterCustomerDto registerUserDto){
+        User registeredUser = authenticationService.signup(registerUserDto);
         return ResponseEntity.ok(registeredUser);
     }
 
@@ -67,18 +80,17 @@ public class CustomerController {
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
 
-//      if(authenticatedUser.getAuthorities().equals("Role_CUSTOMER"))
-            int userId = authenticationService.fetchCustomerId(authenticatedUser);
+        int userId = authenticationService.fetchUserId(authenticatedUser);
         String jwtToken = jwtService.generateToken(authenticatedUser,userId);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
 
         return ResponseEntity.ok(loginResponse);
     }
 
-    @DeleteMapping(value = {"/delete/{id}"})
-    public ResponseEntity<Void>  deleteCustomer(@PathVariable Integer id){
-            service.deleteCustomer(id);
-            return ResponseEntity.ok().build();
-
+    @DeleteMapping(value = {"/delete"})
+    public ResponseEntity<Void>  deleteCustomer(HttpServletRequest request){
+        userId = getUserId(request);
+        service.deleteCustomer(userId);
+        return ResponseEntity.ok().build();
     }
 }

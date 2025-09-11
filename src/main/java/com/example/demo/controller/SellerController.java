@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.LoginResponse;
-import com.example.demo.dto.LoginUserDto;
-import com.example.demo.dto.RegisterSellerDto;
-import com.example.demo.dto.RegisterUserDto;
+import com.example.demo.dto.*;
 import com.example.demo.model.Customer;
+import com.example.demo.model.SkillsListing;
+import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
@@ -31,9 +30,16 @@ public class SellerController {
     private JWTService jwtService;
     @Autowired
     private SellerService service;
+    int userId;
 
+    public int getUserId(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.split(" ")[1];
+        userId = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
+        return userId;
+    }
     @GetMapping(value={"/"})
-    public List<Seller> getSeller(HttpServletRequest request){
+    public User getSeller(HttpServletRequest request){
         String authHeader= request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
         int id = jwtService.extractClaim(token,claims -> claims.get("id", Integer.class));
@@ -47,8 +53,8 @@ public class SellerController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Seller> addSeller(@RequestBody RegisterSellerDto registerSellerDto){
-        Seller registeredSeller = authenticationService.signupSeller(registerSellerDto);
+    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto){
+        User registeredSeller = authenticationService.signupSeller(registerSellerDto);
 
         return ResponseEntity.ok(registeredSeller);
     }
@@ -58,12 +64,20 @@ public class SellerController {
         Authentication authentication = authenticationService.authenticate(loginUserDto);
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
-        int userId = authenticationService.fetchSellerId(authenticatedUser);
+        userId = authenticationService.fetchUserId(authenticatedUser);
         System.out.println(userId);
         String jwtToken = jwtService.generateToken(authenticatedUser,userId);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
 
         return ResponseEntity.ok(loginResponse);
     }
+    
+    @PostMapping("/add-to-listing/{skillId}")
+    public ResponseEntity<SkillsListing> addSkillsListing(@RequestBody CreateListingDTO createListingDTO, @PathVariable int skillId){
+
+
+        service.addSkillsListing(skillId, createListingDTO, userId);
+        return ResponseEntity.ok().build();}
+
 
 }
