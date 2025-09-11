@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.SkillsListing;
 import com.example.demo.repository.SkillsListingRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,8 @@ public class SkillsListingService {
         return skillsListingRepo.findAll();
     }
 
-    public Optional<SkillsListing> getListingById(int id) {
-        return skillsListingRepo.findById(id);
+    public List<SkillsListing> getListingById(int id) {
+        return Collections.singletonList(skillsListingRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("SkillListing not found with id" + id)));
     }
 
     public SkillsListing createListing(SkillsListing listing) {
