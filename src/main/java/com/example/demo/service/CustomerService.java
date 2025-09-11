@@ -1,25 +1,28 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.AllOrderResponse;
-import com.example.demo.dto.CreateOrderDTO;
-import com.example.demo.dto.CustomerRequestDTO;
-import com.example.demo.dto.CustomerResponseDto;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.dto.*;
-import com.example.demo.model.Customer;
-import com.example.demo.model.Orders;
-import com.example.demo.model.Skills;
+import java.time.LocalDate;
+import java.util.List;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import com.example.demo.dto.AllOrderResponse;
+import com.example.demo.dto.CreateOrderDTO;
+import com.example.demo.dto.CustomerResponseDto;
+import com.example.demo.dto.RegisterCustomerDto;
+import com.example.demo.dto.SkillsListingDTO;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Orders;
+import com.example.demo.model.SkillsListing;
+import com.example.demo.model.User;
 import static com.example.demo.model.type.Status.PENDING;
+import com.example.demo.repository.CustomerRepo;
+import com.example.demo.repository.OrdersRepo;
+import com.example.demo.repository.SkillsListingRepo;
+import com.example.demo.repository.SkillsRepo;
+import com.example.demo.repository.UserRepo;
 
 @Service
 public class CustomerService {
@@ -63,19 +66,21 @@ public class CustomerService {
         customerrepo.deleteById(id);
     }
 
-    public List<Skills> getallskills() {
-        return skillsrepo.findAll();
+    public List<SkillsListingDTO> getallskills() {
+        return skillslistingrepo.findAll().stream().map(listing->modelmapper.map(listing, SkillsListingDTO.class)).toList();
     }
 
-    public Skills getallskillsbyId(Integer id) {
-        return skillsrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+
+    public SkillsListing getallskillsbyId(Integer id) {
+        return skillslistingrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+
     }
 
     public void createOrder(int custid, int listingId, CreateOrderDTO createOrderDTO){
         Orders orders = new Orders();
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
-        orders.setCustomer(customerrepo.findById(custid).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + custid)));
+        orders.setCustomer(customerrepo.findByUserId(userRepo.findById(custid).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + custid)).getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + custid)));
         orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(() -> new ResourceNotFoundException("SkillsListing not found with id" + listingId)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
@@ -83,8 +88,8 @@ public class CustomerService {
     }
 
     public List<AllOrderResponse> getallOrders(int id) {
-        User user=userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
-        Customer customer = customerrepo.findById(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+        User user=userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + id));
+        Customer customer = customerrepo.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
 
         List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
                                                     .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();

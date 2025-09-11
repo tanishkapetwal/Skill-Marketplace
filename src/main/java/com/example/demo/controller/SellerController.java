@@ -1,22 +1,19 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.model.Customer;
-import com.example.demo.model.SkillsListing;
-import com.example.demo.model.User;
+import com.example.demo.model.*;
 
+import com.example.demo.model.type.Status;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
-import com.example.demo.model.Seller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,31 +27,32 @@ public class SellerController {
     @Autowired
     private JWTService jwtService;
     @Autowired
-    private SellerService service;
+    private SellerService sellerservice;
     int userId;
 
-    public int getUserId(HttpServletRequest request){
+    public int getUserId(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
         userId = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
         return userId;
     }
-    @GetMapping(value={"/"})
-    public User getSeller(HttpServletRequest request){
-        String authHeader= request.getHeader("Authorization");
+
+    @GetMapping(value = {"/"})
+    public User getSeller(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
-        int id = jwtService.extractClaim(token,claims -> claims.get("id", Integer.class));
-        return service.getSellerById(id);
+        int id = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
+        return sellerservice.getSellerById(id);
 
     }
 
-    @DeleteMapping("/delete")
-    public void deleteSeller(@PathVariable int id){
-        service.deleteSeller(id);
-    }
+//    @DeleteMapping("/delete")
+//    public void deleteSeller(@PathVariable int id){
+//        service.deleteSeller(id);
+//    }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto){
+    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto) {
         User registeredSeller = authenticationService.signupSeller(registerSellerDto);
 
         return ResponseEntity.ok(registeredSeller);
@@ -66,21 +64,36 @@ public class SellerController {
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
 
-        userId = authenticationService.fetchUserId(authenticatedUser);
+        int  id = authenticationService.fetchUserId(authenticatedUser);
 
-        System.out.println(userId);
-        String jwtToken = jwtService.generateToken(authenticatedUser,userId);
+        String jwtToken = jwtService.generateToken(authenticatedUser, id);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
 
         return ResponseEntity.ok(loginResponse);
     }
-    
+
+    @GetMapping("/skills")
+    public ResponseEntity<List<SkillsResponseDTO>>  getSkills(){
+        return new ResponseEntity<>(sellerservice.getSkills(), HttpStatus.OK);
+    }
+
     @PostMapping("/add-to-listing/{skillId}")
-    public ResponseEntity<SkillsListing> addSkillsListing(@RequestBody CreateListingDTO createListingDTO, @PathVariable int skillId){
+    public ResponseEntity<Void> addSkillsListing(@RequestBody CreateListingDTO createListingDTO, @PathVariable int skillId, HttpServletRequest request) {
+        userId = getUserId(request);
+        sellerservice.addSkillsListing(skillId, createListingDTO, userId);
+        return  ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
+    @GetMapping("/order-request")
+    public ResponseEntity<List<SellerOrdersDTO>> allOrderRequest(HttpServletRequest request){
+        userId = getUserId(request);
+        return new ResponseEntity<>( sellerservice.allOrderRequest(userId), HttpStatus.OK);
+    }
 
-        service.addSkillsListing(skillId, createListingDTO, userId);
-        return ResponseEntity.ok().build();}
-
-
+    @PutMapping("/{order_id}/change-status")
+    public ResponseEntity<Void> changeStatus(@PathVariable int order_id, @RequestParam Status status, HttpServletRequest request){
+        userId = getUserId(request);
+        sellerservice.changeStatus(userId, order_id, status);
+        return ResponseEntity.accepted().build();
+    }
 }

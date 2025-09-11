@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.model.Orders;
 import com.example.demo.model.Skills;
+import com.example.demo.model.SkillsListing;
 import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
@@ -46,12 +47,12 @@ public class CustomerController {
     }
 
     @GetMapping("/skills")
-    public ResponseEntity<List<Skills>> getallskills(){
+    public ResponseEntity<List<SkillsListingDTO>> getallskills(){
         return new ResponseEntity<>(service.getallskills(), HttpStatus.OK);
     }
 
     @GetMapping("/skills/{id}")
-    public ResponseEntity<Skills> getallskillsbyId(@PathVariable Integer id){
+    public ResponseEntity<SkillsListing> getallskillsbyId(@PathVariable Integer id){
         return new ResponseEntity<>(service.getallskillsbyId(id), HttpStatus.OK);
     }
 
