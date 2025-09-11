@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Orders;
 import com.example.demo.repository.OrdersRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,8 @@ public class OrdersService {
         return ordersRepo.findAll();
     }
 
-    public Optional<Orders> getOrderById(int id) {
-        return ordersRepo.findById(id);
+    public List<Orders> getOrderById(int id) {
+        return Collections.singletonList(ordersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found with id" + id)));
     }
 
     public Orders createOrder(Orders order) {

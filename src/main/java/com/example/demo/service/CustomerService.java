@@ -1,5 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.AllOrderResponse;
+import com.example.demo.dto.CreateOrderDTO;
+import com.example.demo.dto.CustomerRequestDTO;
+import com.example.demo.dto.CustomerResponseDto;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.dto.*;
 import com.example.demo.model.*;
 
@@ -59,24 +64,27 @@ public class CustomerService {
         return skillslistingrepo.findAll();
     }
 
+
     public SkillsListing getallskillsbyId(Integer id) {
-        return skillslistingrepo.findById(id).orElseThrow(RuntimeException::new);
+        return skillslistingrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+
     }
 
     public void createOrder(int custid, int listingId, CreateOrderDTO createOrderDTO){
         Orders orders = new Orders();
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
-        orders.setCustomer(customerrepo.findById(custid).orElseThrow(RuntimeException::new));
-        orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(RuntimeException::new));
+        orders.setCustomer(customerrepo.findById(custid).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + custid)));
+        orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(() -> new ResourceNotFoundException("SkillsListing not found with id" + listingId)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
         ordersrepo.save(orders);
     }
 
     public List<AllOrderResponse> getallOrders(int id) {
-        User user=userRepo.findById(id).orElse(null);
-        Customer customer = customerrepo.findById(user.getId()).orElseThrow();
+        User user=userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+        Customer customer = customerrepo.findById(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+
         List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
                                                     .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();
 

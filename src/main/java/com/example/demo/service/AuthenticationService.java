@@ -2,7 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.dto.LoginUserDto;
 import com.example.demo.dto.RegisterSellerDto;
+
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.dto.RegisterCustomerDto;
+
 import com.example.demo.model.Customer;
 import com.example.demo.model.Seller;
 import com.example.demo.model.User;
@@ -97,9 +100,11 @@ public class AuthenticationService {
         return authentication;
     }
 
+
     public int fetchUserId(UserDetails userDetails){
         User user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(RuntimeException::new);
         return user.getId();
+
     }
 
     public User signupAdmin(RegisterCustomerDto input) {

@@ -23,7 +23,7 @@ public class SkillsController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Skills> getSkillById(@PathVariable int id) {
+    public List<Skills> getSkillById(@PathVariable int id) {
         return skillsService.getSkillById(id);
     }
 }
