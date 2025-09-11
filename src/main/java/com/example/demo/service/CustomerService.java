@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.AllOrderResponse;
 import com.example.demo.dto.CreateOrderDTO;
-import com.example.demo.dto.CustomerRequestDTO;
+
 import com.example.demo.dto.CustomerResponseDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.dto.*;
@@ -60,8 +60,8 @@ public class CustomerService {
         customerrepo.deleteById(id);
     }
 
-    public List<SkillsListing> getallskills() {
-        return skillslistingrepo.findAll();
+    public List<SkillsListingDTO> getallskills() {
+        return skillslistingrepo.findAll().stream().map(listing->modelmapper.map(listing, SkillsListingDTO.class)).toList();
     }
 
 
