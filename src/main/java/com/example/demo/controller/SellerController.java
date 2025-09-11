@@ -4,6 +4,7 @@ import com.example.demo.dto.*;
 import com.example.demo.model.Customer;
 import com.example.demo.model.SkillsListing;
 import com.example.demo.model.User;
+
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
@@ -64,7 +65,9 @@ public class SellerController {
         Authentication authentication = authenticationService.authenticate(loginUserDto);
 
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
+
         userId = authenticationService.fetchUserId(authenticatedUser);
+
         System.out.println(userId);
         String jwtToken = jwtService.generateToken(authenticatedUser,userId);
         LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
