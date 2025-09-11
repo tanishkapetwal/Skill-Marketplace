@@ -1,27 +1,26 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateListingDTO;
+import com.example.demo.dto.SellerOrdersDTO;
 import com.example.demo.dto.SkillsResponseDTO;
-import com.example.demo.model.Seller;
-import com.example.demo.model.Skills;
+import com.example.demo.model.Orders;
 import com.example.demo.model.SkillsListing;
 
 import com.example.demo.model.User;
-import com.example.demo.repository.SellerRepo;
-import com.example.demo.repository.SkillsListingRepo;
-import com.example.demo.repository.SkillsRepo;
-import com.example.demo.repository.UserRepo;
+import com.example.demo.model.type.Status;
+import com.example.demo.repository.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class SellerService {
 
+    @Autowired
+    private OrdersRepo orderRepo;
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -64,6 +63,28 @@ public class SellerService {
                 map(skills -> modelmapper.map(skills, SkillsResponseDTO.class)).toList();
         return skillsResponseDTOS;
 //        return skillsRepo.findAll();
+
+    }
+
+    public List<SellerOrdersDTO> allOrderRequest(int userId) {
+        int seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow().getId()).orElseThrow().getId();
+
+        List<SellerOrdersDTO> sellerOrdersDTOS =  orderRepo.findBySkillslisting_SellerId(seller_id).
+                                                stream().map(orders->modelmapper.map(orders, SellerOrdersDTO.class)).
+                                                toList();
+
+       return sellerOrdersDTOS;
+    }
+
+    public void changeStatus(int userId, int order_id, Status status) {
+        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow().getId()).orElseThrow().getId();
+        Orders order = orderRepo.findById(order_id).orElseThrow();
+        Integer sellerIdfromOrder = order.getSkillslisting().getSeller().getId();
+        if(!seller_id.equals(sellerIdfromOrder))
+            throw new RuntimeException("Can't access this page!");
+
+        order.setStatus(status);
+        orderRepo.save(order);
 
     }
 }
