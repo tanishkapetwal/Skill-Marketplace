@@ -6,11 +6,8 @@ import com.example.demo.dto.CustomerRequestDTO;
 import com.example.demo.dto.CustomerResponseDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.dto.*;
-import com.example.demo.model.Customer;
-import com.example.demo.model.Orders;
-import com.example.demo.model.Skills;
+import com.example.demo.model.*;
 
-import com.example.demo.model.User;
 import com.example.demo.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +60,14 @@ public class CustomerService {
         customerrepo.deleteById(id);
     }
 
-    public List<Skills> getallskills() {
-        return skillsrepo.findAll();
+    public List<SkillsListing> getallskills() {
+        return skillslistingrepo.findAll();
     }
 
-    public Skills getallskillsbyId(Integer id) {
-        return skillsrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+
+    public SkillsListing getallskillsbyId(Integer id) {
+        return skillslistingrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+
     }
 
     public void createOrder(int custid, int listingId, CreateOrderDTO createOrderDTO){

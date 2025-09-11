@@ -11,6 +11,7 @@ public class GlobalException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> Exception(Exception ex){
+        System.out.println(ex.getMessage());
         ApiError apiError = new ApiError(ex.getMessage(), HttpStatus.I_AM_A_TEAPOT);
         return new ResponseEntity<ApiError>(apiError, apiError.getHttpStatus());}
 

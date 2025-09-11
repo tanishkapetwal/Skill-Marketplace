@@ -1,8 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateListingDTO;
+
+import com.example.demo.dto.SkillsResponseDTO;
+
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Seller;
+import com.example.demo.model.Skills;
 import com.example.demo.model.SkillsListing;
 
 import com.example.demo.model.User;
@@ -35,16 +39,24 @@ public class SellerService {
     public User getSellerById(Integer id) {
         return userRepo.findById(id).orElseThrow();
 
-
-    public void deleteSeller(int id) {
-        sellerRepo.deleteById(id);
     }
-    public void addSkillsListing(int skillId, CreateListingDTO createListingDTO, int sellerId) {
-        SkillsListing skillsListing=new SkillsListing();
+        public SkillsListing addSkillsListing ( int skillId, CreateListingDTO createListingDTO,int sellerId){
+            SkillsListing skillsListing = new SkillsListing();
 
 
 //        skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
-        skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
+//            skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
+
+            skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(RuntimeException::new));
+
+            skillsListing.setSeller(sellerRepo.findByUserId(userRepo.findById(sellerId).orElseThrow().getId()).orElseThrow());
+
+            skillsListing.setTitle(createListingDTO.getTitle());
+
+            skillsListing.setDescription(createListingDTO.getDescription());
+            skillsListing.setPrice(createListingDTO.getPrice());
+            skillsListing.setTime(createListingDTO.getTime());
+
 
         skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + skillId)));
         skillsListing.setSeller(sellerRepo.findById(sellerId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + sellerId)));
@@ -52,5 +64,16 @@ public class SellerService {
         skillsListing.setTitle(createListingDTO.getTitle());
         skillsListing.setDescription(createListingDTO.getDescription());
 
-        skillsListingRepo.save(skillsListing);}
+
+          return  skillsListingRepo.save(skillsListing);
+        }
+
+    public List<SkillsResponseDTO> getSkills() {
+
+        List<SkillsResponseDTO> skillsResponseDTOS = skillsRepo.findAll().stream().
+                map(skills -> modelmapper.map(skills, SkillsResponseDTO.class)).toList();
+        return skillsResponseDTOS;
+//        return skillsRepo.findAll();
+
+    }
 }
