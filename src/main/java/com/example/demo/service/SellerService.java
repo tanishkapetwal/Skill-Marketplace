@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.*;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
 
 import com.example.demo.model.type.Status;
@@ -80,7 +81,7 @@ public class SellerService {
     }
 
     public void changeStatus(int userId, int order_id, Status status) {
-        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow().getId()).orElseThrow().getId();
+        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId)).getId()).orElseThrow(() -> new ResourceNotFoundException("Seller not found with this id")).getId();
         Orders order = orderRepo.findById(order_id).orElseThrow();
         Integer sellerIdfromOrder = order.getSkillslisting().getSeller().getId();
         if(!seller_id.equals(sellerIdfromOrder))
