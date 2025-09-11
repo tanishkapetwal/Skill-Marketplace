@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.model.type.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,10 @@ public class Skills {
     private String name;
     @NotNull
     private String description;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @OneToMany(mappedBy = "skills", cascade = CascadeType.ALL)
     private List<SkillsListing> skillsListing;

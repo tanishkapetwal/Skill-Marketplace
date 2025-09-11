@@ -26,72 +26,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Seller implements UserDetails {
+public class Seller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
-    private String name;
-    @NotNull
-    private String email;
-    @NotNull
-    @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
-    private String phone;
 
-    @Column(length = 60, nullable = false)
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).*$",
-
-            message = "Password must contain at least one digit, one lowercase, one uppercase, and one special character"
-    )
-
-    private String password;
-
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     private String bio;
     private int rating;
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<SkillsListing> skillsListing;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
 }
 

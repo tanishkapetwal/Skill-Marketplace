@@ -36,7 +36,10 @@ public class SkillsService {
         }).orElseThrow(() -> new RuntimeException("Skill not found"));
     }
 
+    public Skills addSkills(Skills skill){
+        return skillsRepo.save(skill);
+    }
     public void deleteSkill(int id) {
-        skillsRepo.deleteById(id);
+         skillsRepo.deleteById(id);
     }
 }
