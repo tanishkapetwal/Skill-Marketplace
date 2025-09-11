@@ -58,13 +58,6 @@ public class SellerService {
             skillsListing.setTime(createListingDTO.getTime());
 
 
-        skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + skillId)));
-        skillsListing.setSeller(sellerRepo.findById(sellerId).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + sellerId)));
-
-        skillsListing.setTitle(createListingDTO.getTitle());
-        skillsListing.setDescription(createListingDTO.getDescription());
-
-
           return  skillsListingRepo.save(skillsListing);
         }
 
