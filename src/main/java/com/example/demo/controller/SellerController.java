@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.model.*;
 
+import com.example.demo.model.type.Status;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
@@ -83,4 +84,16 @@ public class SellerController {
         return  ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/order-request")
+    public ResponseEntity<List<SellerOrdersDTO>> allOrderRequest(HttpServletRequest request){
+        userId = getUserId(request);
+        return new ResponseEntity<>( sellerservice.allOrderRequest(userId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{order_id}/change-status")
+    public ResponseEntity<Void> changeStatus(@PathVariable int order_id, @RequestParam Status status, HttpServletRequest request){
+        userId = getUserId(request);
+        sellerservice.changeStatus(userId, order_id, status);
+        return ResponseEntity.accepted().build();
+    }
 }
