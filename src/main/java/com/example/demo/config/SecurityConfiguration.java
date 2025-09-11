@@ -32,9 +32,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/customer/login", "/customer/signup", "/seller/login", "/seller/signup").permitAll()
+                        .requestMatchers("/admin/login","/customer/login", "/customer/signup", "/seller/login", "/seller/signup").permitAll()
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/seller/**").hasRole("SELLER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()
                 )
