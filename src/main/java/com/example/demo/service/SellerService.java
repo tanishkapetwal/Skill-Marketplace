@@ -66,6 +66,7 @@ public class SellerService {
 
         Seller seller = modelmapper.map(registerSeller, Seller.class);
         return sellerRepo.save(seller);
+
     }
     public void deleteSeller(Integer id) {
         sellerRepo.deleteById(id);

@@ -56,12 +56,16 @@ public class AdminController {
         return new ResponseEntity<>(skillsService.addSkills(skill), HttpStatus.OK);
     }
     @PostMapping("/add-customer")
-    public ResponseEntity<Customer> addCustomers(@RequestBody RegisterCustomerDto customer){
-        return new ResponseEntity<>(customerService.addCustomers(customer), HttpStatus.OK);
+    public ResponseEntity<User> addCustomers(@RequestBody RegisterCustomerDto customer){
+        customerService.addCustomers(customer);
+        User registeredUser = authenticationService.signupCustomerByAdmin(customer);
+        return ResponseEntity.ok(registeredUser);
     }
     @PostMapping("/add-seller")
-    public ResponseEntity<Seller> addSeller(@RequestBody RegisterSellerDto seller){
-        return new ResponseEntity<>(sellerService.addSeller(seller), HttpStatus.OK);
+    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto seller){
+        sellerService.addSeller(seller);
+        User registeredUser = authenticationService.signupSellerByAdmin(seller);
+        return ResponseEntity.ok(registeredUser);
     }
 
     @DeleteMapping("/remove/skill/{id}")
