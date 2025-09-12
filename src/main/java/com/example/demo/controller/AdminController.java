@@ -76,11 +76,13 @@ public class AdminController {
     @DeleteMapping("/remove/customer/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable int id){
         customerService.deleteCustomer(id);
+        authenticationService.deleteUserByCustomerId(id);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/remove/seller/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable int id){
         sellerService.deleteSeller(id);
+        authenticationService.deleteUserBySellerId(id);
         return ResponseEntity.ok().build();
     }
 
