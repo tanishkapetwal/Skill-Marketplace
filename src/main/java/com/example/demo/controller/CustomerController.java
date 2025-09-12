@@ -94,4 +94,29 @@ public class CustomerController {
         service.deleteCustomer(userId);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/order/{orderId}/rate")
+    public ResponseEntity<String> rateOrder(
+            @PathVariable int orderId,
+            @RequestParam int ratingValue,
+            HttpServletRequest request) {
+
+        int customerId = getUserId(request);
+        Orders order = service.findOrderById(orderId);
+
+        // Ensure order belongs to logged-in customer
+        if (order.getCustomer().getId() != customerId) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You can only rate your own orders.");
+        }
+
+        // Save rating
+        order.setOrderRating(ratingValue);
+        service.saveOrder(order);
+
+        // Update product & seller averages
+        service.updateRatings(orderId);
+
+        return ResponseEntity.ok("Rating submitted successfully!");
+    }
+
 }

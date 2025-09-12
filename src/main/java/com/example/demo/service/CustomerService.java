@@ -96,4 +96,21 @@ public class CustomerService {
 
         return orderResponseList;
     }
+    @Autowired
+    private OrdersRepo ordersRepo;
+    @Autowired
+    private RatingService ratingService;
+
+    public Orders findOrderById(int orderId) {
+        return ordersRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public Orders saveOrder(Orders order) {
+        return ordersRepo.save(order);
+    }
+
+    public void updateRatings(int orderId) {
+        ratingService.updateRatingsAfterOrder(orderId);
+    }
+
 }
