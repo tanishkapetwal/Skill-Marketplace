@@ -36,7 +36,7 @@ public class SkillsListingService {
             listing.setDescription(listingDetails.getDescription());
             listing.setPrice(listingDetails.getPrice());
             listing.setTime(listingDetails.getTime());
-            listing.setSkillRating(listingDetails.getSkillRating());
+            listing.setAvgRating(listingDetails.getAvgRating());
             listing.setSkills(listingDetails.getSkills());
             listing.setSeller(listingDetails.getSeller());
             return skillsListingRepo.save(listing);

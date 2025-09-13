@@ -53,6 +53,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+     private Customer customer;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Seller seller;
 
     public String getPassword() {
         return password;

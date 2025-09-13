@@ -37,6 +37,11 @@ public class Seller {
     private User user;
     private String bio;
     private int rating;
+    @Column
+    private Double avgRating;
+    @Column(nullable = false)
+    private int ratingCount = 0;   // total number of ratings received
+
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<SkillsListing> skillsListing;

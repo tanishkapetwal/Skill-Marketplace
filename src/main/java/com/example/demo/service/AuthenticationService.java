@@ -107,17 +107,31 @@ public class AuthenticationService {
 
     }
 
-    public User signupAdmin(RegisterCustomerDto input) {
+
+    public User signupCustomerByAdmin(RegisterCustomerDto input) {
 
         User user = new User();
         user.setName(input.getName());
         user.setPhone(input.getPhone());
         user.setEmail(input.getEmail());
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 
         User savedUser = userRepo.save(user);
         return savedUser;
     }
+    public User signupSellerByAdmin(RegisterSellerDto input) {
+
+        User user = new User();
+        user.setName(input.getName());
+        user.setPhone(input.getPhone());
+        user.setEmail(input.getEmail());
+        user.setRole(Role.SELLER);
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
+
+        User savedUser = userRepo.save(user);
+        return savedUser;
+    }
+
 }
 
