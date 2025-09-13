@@ -27,13 +27,7 @@ public class SkillsService {
         return skillsRepo.save(skill);
     }
 
-    public Skills updateSkill(int id, Skills skillDetails) {
-        return skillsRepo.findById(id).map(skill -> {
-            skill.setName(skillDetails.getName());
-            skill.setDescription(skillDetails.getDescription());
-            return skillsRepo.save(skill);
-        }).orElseThrow(() -> new RuntimeException("Skill not found"));
-    }
+
 
     public Skills addSkills(Skills skill){
         return skillsRepo.save(skill);

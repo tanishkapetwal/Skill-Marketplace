@@ -107,18 +107,7 @@ public class AuthenticationService {
 
     }
 
-    public User signupAdmin(RegisterCustomerDto input) {
 
-        User user = new User();
-        user.setName(input.getName());
-        user.setPhone(input.getPhone());
-        user.setEmail(input.getEmail());
-        user.setRole(Role.ADMIN);
-        user.setPassword(passwordEncoder.encode(input.getPassword()));
-
-        User savedUser = userRepo.save(user);
-        return savedUser;
-    }
     public User signupCustomerByAdmin(RegisterCustomerDto input) {
 
         User user = new User();
@@ -143,21 +132,6 @@ public class AuthenticationService {
         User savedUser = userRepo.save(user);
         return savedUser;
     }
-    public void deleteUserBySellerId(int /*Integer*/ sellerId) {
-        // First find the seller to get the user ID
-        Seller seller = sellerRepo.findById(sellerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id: " + sellerId));
 
-        // Then delete the user
-        userRepo.deleteById(seller.getUser().getId());
-    }
-    public void deleteUserByCustomerId(int /*Integer*/ customerId) {
-        // First find the customer to get the user ID
-        Customer seller = customerRepo.findById(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id: " + customerId));
-
-        // Then delete the user
-        userRepo.deleteById(seller.getUser().getId());
-    }
 }
 

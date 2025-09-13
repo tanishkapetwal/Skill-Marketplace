@@ -8,6 +8,7 @@ import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.SkillsListingService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class CustomerController {
     private final AuthenticationService authenticationService;
     @Autowired
     private final JWTService jwtService;
+    @Autowired
+    private SkillsListingService skillsListingService;
 
     @Autowired
     private final CustomerService service;
@@ -101,20 +104,8 @@ public class CustomerController {
             HttpServletRequest request) {
 
         int customerId = getUserId(request);
-        Orders order = service.findOrderById(orderId);
+        service.saveOrder(orderId, customerId, ratingValue);
 
-        // Ensure order belongs to logged-in customer
-        if (order.getCustomer().getId() != customerId) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You can only rate your own orders.");
-        }
-
-        // Save rating
-        order.setOrderRating(ratingValue);
-        service.saveOrder(order);
-
-        // Update product & seller averages
-        service.updateRatings(orderId);
 
         return ResponseEntity.ok("Rating submitted successfully!");
     }

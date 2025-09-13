@@ -10,10 +10,7 @@ import com.example.demo.model.Seller;
 import com.example.demo.model.Skills;
 import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
-import com.example.demo.service.AuthenticationService;
-import com.example.demo.service.CustomerService;
-import com.example.demo.service.SellerService;
-import com.example.demo.service.SkillsService;
+import com.example.demo.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/admin")
 public class AdminController {
+
+    @Autowired
+    private AdminService adminService;
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
@@ -75,25 +75,24 @@ public class AdminController {
     }
     @DeleteMapping("/remove/customer/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable int id){
-        customerService.deleteCustomer(id);
-        authenticationService.deleteUserByCustomerId(id);
+        adminService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/remove/seller/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable int id){
-        sellerService.deleteSeller(id);
-        authenticationService.deleteUserBySellerId(id);
+        adminService.deleteUser(id);
+
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/add-admin")
     public ResponseEntity<User> addAdmin(@RequestBody RegisterCustomerDto registerUserDto){
-        User registeredUser = authenticationService.signupAdmin(registerUserDto);
+        User registeredUser = adminService.signupAdmin(registerUserDto);
         return ResponseEntity.ok(registeredUser);
     }
 
     @PutMapping("/{id}")
     public Skills updateSkill(@PathVariable int id, @RequestBody Skills skill) {
-        return skillsService.updateSkill(id, skill);
+        return adminService.updateSkill(id, skill);
     }
 }
