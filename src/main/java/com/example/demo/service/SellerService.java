@@ -92,4 +92,8 @@ public class SellerService {
         orderRepo.save(order);
 
     }
+
+    public List<Seller> getSellers() {
+        return sellerRepo.findAll();
+    }
 }

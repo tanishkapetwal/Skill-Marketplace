@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.dto.LoginResponse;
-import com.example.demo.dto.LoginUserDto;
-import com.example.demo.dto.RegisterCustomerDto;
-import com.example.demo.dto.RegisterSellerDto;
+import com.example.demo.dto.*;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Seller;
 import com.example.demo.model.Skills;
@@ -19,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -61,13 +60,22 @@ public class AdminController {
         User registeredUser = authenticationService.signupCustomerByAdmin(customer);
         return ResponseEntity.ok(registeredUser);
     }
+    @GetMapping("/all-customers")
+    public List<CustomerResponseDto> getCustomers(){
+        return customerService.getCustomers();
+
+    }
     @PostMapping("/add-seller")
     public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto seller){
         sellerService.addSeller(seller);
         User registeredUser = authenticationService.signupSellerByAdmin(seller);
         return ResponseEntity.ok(registeredUser);
     }
+    @GetMapping("/all-sellers")
+    public List<Seller> getSellers(){
+        return sellerService.getSellers();
 
+    }
     @DeleteMapping("/remove/skill/{id}")
     public ResponseEntity<Void> deleteSkills(@PathVariable int id){
         skillsService.deleteSkill(id);
