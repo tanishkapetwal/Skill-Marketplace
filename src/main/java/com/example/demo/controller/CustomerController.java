@@ -8,6 +8,7 @@ import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.SkillsListingService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class CustomerController {
     private final AuthenticationService authenticationService;
     @Autowired
     private final JWTService jwtService;
+    @Autowired
+    private SkillsListingService skillsListingService;
 
     @Autowired
     private final CustomerService service;
@@ -94,4 +97,17 @@ public class CustomerController {
         service.deleteCustomer(userId);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/order/{orderId}/rate")
+    public ResponseEntity<String> rateOrder(
+            @PathVariable int orderId,
+            @RequestParam int ratingValue,
+            HttpServletRequest request) {
+
+        int customerId = getUserId(request);
+        service.saveOrder(orderId, customerId, ratingValue);
+
+
+        return ResponseEntity.ok("Rating submitted successfully!");
+    }
+
 }

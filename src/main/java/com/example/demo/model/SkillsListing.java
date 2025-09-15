@@ -27,7 +27,11 @@ public class SkillsListing {
     private float price;
     @NotNull          //constraint
     private double time;
-    private int skillRating;
+    @Column
+    private Double avgRating;
+    @Column(nullable = false)
+    private int ratingCount = 0;   // total number of ratings received
+
 
     @ManyToOne
     @JoinColumn(name = "skills_id")

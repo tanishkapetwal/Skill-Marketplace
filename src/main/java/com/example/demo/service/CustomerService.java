@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.AllOrderResponse;
@@ -96,4 +98,35 @@ public class CustomerService {
 
         return orderResponseList;
     }
+    @Autowired
+    private OrdersRepo ordersRepo;
+    @Autowired
+    private RatingService ratingService;
+
+    public Orders findOrderById(int orderId) {
+        return ordersRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public String saveOrder(int orderId, int customerId, int ratingValue) {
+        Orders order = this.findOrderById(orderId);
+
+        if (order.getCustomer().getUser().getId() != customerId) {
+            return "You can only rate your own orders";
+        }
+
+        order.setOrderRating(ratingValue);
+
+        // Update product & seller averages
+        this.updateRatings(orderId);
+        ordersRepo.save(order);
+        SkillsListing skillsListing=skillslistingrepo.findById(order.getSkillslisting().getId()).orElseThrow(RuntimeException::new);
+        skillsListing.setRatingCount(skillsListing.getRatingCount()+1);
+        skillslistingrepo.save(skillsListing);
+        return "Sucessfully submiited rating";
+    }
+
+    public void updateRatings(int orderId) {
+        ratingService.updateRatingsAfterOrder(orderId);
+    }
+
 }
