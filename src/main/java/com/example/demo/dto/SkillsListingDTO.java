@@ -1,9 +1,6 @@
 package com.example.demo.dto;
 
 import com.example.demo.model.type.Category;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class SkillsListingDTO {
 
+    private int id;
     private String title;
 
     private String description;
@@ -20,7 +18,7 @@ public class SkillsListingDTO {
     private float price;
 
     private double time;
-    private int skillRating;
+    private int avgRating;
 
     private String skillsName;
 

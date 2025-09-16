@@ -3,17 +3,13 @@ package com.example.demo.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.demo.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.AllOrderResponse;
-import com.example.demo.dto.CreateOrderDTO;
-import com.example.demo.dto.CustomerResponseDto;
-import com.example.demo.dto.RegisterCustomerDto;
-import com.example.demo.dto.SkillsListingDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Orders;
@@ -69,12 +65,12 @@ public class CustomerService {
     }
 
     public List<SkillsListingDTO> getallskills() {
-        return skillslistingrepo.findAll().stream().map(listing->modelmapper.map(listing, SkillsListingDTO.class)).toList();
+        return skillslistingrepo.findAll().stream().map(skills->modelmapper.map(skills, SkillsListingDTO.class)).toList();
     }
 
 
-    public SkillsListing getallskillsbyId(Integer id) {
-        return skillslistingrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Skill not found with id" + id));
+    public SkillsListingDTO getallskillsbyId(Integer id) {
+        return modelmapper.map(skillslistingrepo.findById(id), SkillsListingDTO.class);
 
     }
 

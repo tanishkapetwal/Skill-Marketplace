@@ -55,7 +55,7 @@ public class CustomerController {
     }
 
     @GetMapping("/skills/{id}")
-    public ResponseEntity<SkillsListing> getallskillsbyId(@PathVariable Integer id){
+    public ResponseEntity<SkillsListingDTO> getallskillsbyId(@PathVariable Integer id){
         return new ResponseEntity<>(service.getallskillsbyId(id), HttpStatus.OK);
     }
 
@@ -73,9 +73,12 @@ public class CustomerController {
         return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
     }
     @PostMapping("/signup")
-    public ResponseEntity<User> addCustomers(@RequestBody RegisterCustomerDto registerUserDto){
+    public ResponseEntity<LoginResponse> addCustomers(@RequestBody RegisterCustomerDto registerUserDto){
         User registeredUser = authenticationService.signup(registerUserDto);
-        return ResponseEntity.ok(registeredUser);
+        LoginUserDto loginUserDto= new LoginUserDto();
+        loginUserDto.setEmail(registeredUser.getEmail());
+        loginUserDto.setPassword(registerUserDto.getPassword());
+        return authenticate(loginUserDto);
     }
 
     @PostMapping("/login")
