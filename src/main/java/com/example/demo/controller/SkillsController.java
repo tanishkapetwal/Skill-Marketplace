@@ -2,20 +2,19 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Skills;
 import com.example.demo.service.SkillsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/skills")
 public class SkillsController {
 
-    private final SkillsService skillsService;
+    @Autowired
+    private SkillsService skillsService;
 
-    public SkillsController(SkillsService skillsService) {
-        this.skillsService = skillsService;
-    }
 
     @GetMapping
     public List<Skills> getAllSkills() {
