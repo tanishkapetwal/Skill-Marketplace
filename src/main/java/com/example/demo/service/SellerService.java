@@ -96,4 +96,14 @@ public class SellerService {
     public List<Seller> getSellers() {
         return sellerRepo.findAll();
     }
+    public List<SkillsListingDTO> getListing(int userId){
+        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId)).getId()).orElseThrow(() -> new ResourceNotFoundException("Seller not found with this id")).getId();
+        List<SkillsListingDTO> obj= skillsListingRepo.findBySellerId(seller_id).
+                                    stream().map(s->modelmapper.map(s,SkillsListingDTO.class)).toList();
+        return obj;
+    }
+
+    public void deleteListing(int id) {
+        skillsListingRepo.deleteById(id);
+    }
 }

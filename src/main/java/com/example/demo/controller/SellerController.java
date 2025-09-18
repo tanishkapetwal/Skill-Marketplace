@@ -89,11 +89,20 @@ public class SellerController {
         userId = getUserId(request);
         return new ResponseEntity<>( sellerservice.allOrderRequest(userId), HttpStatus.OK);
     }
+    @GetMapping("/skill-listings")
+    public ResponseEntity<List<SkillsListingDTO>> getListing(HttpServletRequest request){
+        userId = getUserId(request);
+        return new ResponseEntity<>( sellerservice.getListing(userId), HttpStatus.OK);
+    }
 
     @PutMapping("/{order_id}/change-status")
     public ResponseEntity<Void> changeStatus(@PathVariable int order_id, @RequestParam Status status, HttpServletRequest request){
         userId = getUserId(request);
         sellerservice.changeStatus(userId, order_id, status);
         return ResponseEntity.accepted().build();
+    }
+    @DeleteMapping("/delete/{listingId}")
+    public void deleteListing(@PathVariable int listingId) {
+        sellerservice.deleteListing(listingId);
     }
 }
