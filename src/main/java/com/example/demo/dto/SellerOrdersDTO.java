@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SellerOrdersDTO {
-
+    private int id;   // orderId
     private Status ordersStatus;
     private LocalDate ordersOrderDate;
 
