@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         http.csrf(csrf->csrf.disable())
                 .cors(cors->{})
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/admin/login","/customer/login", "/customer/signup", "/seller/login", "/seller/signup").permitAll()
+                        .requestMatchers("/ws/**","/admin/login","/customer/login", "/customer/signup", "/seller/login", "/seller/signup").permitAll()
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -55,6 +55,7 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET","POST","PUT", "DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 

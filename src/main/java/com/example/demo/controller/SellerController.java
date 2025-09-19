@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.Notification;
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -96,10 +97,10 @@ public class SellerController {
     }
 
     @PutMapping("/{order_id}/change-status")
-    public ResponseEntity<Void> changeStatus(@PathVariable int order_id, @RequestParam Status status, HttpServletRequest request){
+    public ResponseEntity<String> changeStatus(@PathVariable int order_id, @RequestParam Status status, HttpServletRequest request){
         userId = getUserId(request);
-        sellerservice.changeStatus(userId, order_id, status);
-        return ResponseEntity.accepted().build();
+        String message = sellerservice.changeStatus(userId, order_id, status);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{listingId}")
     public void deleteListing(@PathVariable int listingId) {

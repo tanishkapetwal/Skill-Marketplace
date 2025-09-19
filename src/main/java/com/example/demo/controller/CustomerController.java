@@ -63,6 +63,7 @@ public class CustomerController {
     @PostMapping("/order/{listingId}")
     public ResponseEntity<Orders> createOrder(@PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto, HttpServletRequest request){
         userId = getUserId(request);
+        System.out.println(createorderdto);
         service.createOrder(userId,listingId,createorderdto);
         return ResponseEntity.ok().build();
     }
@@ -108,8 +109,6 @@ public class CustomerController {
 
         int customerId = getUserId(request);
         service.saveOrder(orderId, customerId, ratingValue);
-
-
         return ResponseEntity.ok("Rating submitted successfully!");
     }
 
