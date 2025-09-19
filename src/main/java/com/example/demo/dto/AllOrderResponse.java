@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 @Data
 public class AllOrderResponse {
+    private int id;
+    private int skillsListingId;
+    private String skillsListingTitle;
+    private String skillsListingSellerUserName;
     private LocalDateTime appointmentStart;
     private LocalDateTime appointmentEnd;
     private int orderRating;

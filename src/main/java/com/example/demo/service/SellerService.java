@@ -9,7 +9,10 @@ import com.example.demo.repository.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate.*;
 
 import java.util.List;
 
@@ -28,6 +31,10 @@ public class SellerService {
     private SellerRepo sellerRepo;
     @Autowired
     private SkillsListingRepo skillsListingRepo;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private EmailService emailService;
 
     public User getSellerById(Integer id) {
         return userRepo.findById(id).orElseThrow();
@@ -81,7 +88,7 @@ public class SellerService {
        return sellerOrdersDTOS;
     }
 
-    public void changeStatus(int userId, int order_id, Status status) {
+    public String changeStatus(int userId, int order_id, Status status) {
         Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId)).getId()).orElseThrow(() -> new ResourceNotFoundException("Seller not found with this id")).getId();
         Orders order = orderRepo.findById(order_id).orElseThrow();
         Integer sellerIdfromOrder = order.getSkillslisting().getSeller().getId();
@@ -91,6 +98,29 @@ public class SellerService {
         order.setStatus(status);
         orderRepo.save(order);
 
+        Notification notification = new Notification( order_id,"Order status changed to"+status.toString().toUpperCase());
+        messagingTemplate.convertAndSend("/topic/orders/"+order.getCustomer().getUser().getId(), notification);
+
+        if(status.toString().equals("ACCEPTED")){
+            EmailDetails emailDetails = getEmailDetails(order_id, order);
+            emailService.sendSimpleMail(emailDetails);
+        }
+        return "Order " +order_id+"updated to"+status.toString();
+    }
+
+    private static EmailDetails getEmailDetails(int order_id, Orders order) {
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient(order.getCustomer().getUser().getEmail());
+        emailDetails.setSubject("Order Request for "+ order_id +" has been accepted");
+        emailDetails.setMsgBody("Dear "+ order.getCustomer().getUser().getName()+",\n We are happy to inform you that " +
+                "your order has been accepted by the teacher.\n"+
+                "For connecting with teacher here are the details:\n"+"Name: "
+                + order.getSkillslisting().getSeller().getUser().getName()+"\nSkill: "+ order.getSkillslisting().getSkills().getName()
+                +"\nAppointment Date: "+ order.getAppointmentStart()+"\nEmail: "+ order.getCustomer().getUser().getEmail()
+                +"\nPhone Number "+ order.getCustomer().getUser().getPhone()+
+                "\n\n Best Regards\n" +
+                "Team TechMate");
+        return emailDetails;
     }
 
     public List<Seller> getSellers() {
