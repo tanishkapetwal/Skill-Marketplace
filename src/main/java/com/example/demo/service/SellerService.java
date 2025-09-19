@@ -40,7 +40,7 @@ public class SellerService {
 //        skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
 //            skillsListing = modelmapper.map(createListingDTO, SkillsListing.class);
 
-            skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(RuntimeException::new));
+            skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + skillId)));
 
             skillsListing.setSeller(sellerRepo.findByUserId(userRepo.findById(sellerId).orElseThrow().getId()).orElseThrow());
 

@@ -15,7 +15,7 @@ public class SellerOrdersDTO {
     private int id;   // orderId
     private Status ordersStatus;
     private LocalDate ordersOrderDate;
-
+    private float skillsListingPrice;  // spring automatically assigns price of SkillsListing model
     private String ordersCustomerUserName;
     private String ordersSkillsListingSkillsName;
 }
