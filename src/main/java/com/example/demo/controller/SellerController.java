@@ -7,17 +7,25 @@ import com.example.demo.model.type.Status;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.Notification;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/seller")
@@ -29,6 +37,8 @@ public class SellerController {
     private JWTService jwtService;
     @Autowired
     private SellerService sellerservice;
+    @Autowired
+    private UserDetailsService userDetailsService;
     int userId;
 
     public int getUserId(HttpServletRequest request) {
@@ -47,11 +57,6 @@ public class SellerController {
 
     }
 
-//    @DeleteMapping("/delete")
-//    public void deleteSeller(@PathVariable int id){
-//        service.deleteSeller(id);
-//    }
-
     @PostMapping("/signup")
     public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto) {
         User registeredSeller = authenticationService.signupSeller(registerSellerDto);
@@ -62,17 +67,48 @@ public class SellerController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         Authentication authentication = authenticationService.authenticate(loginUserDto);
-
         UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
 
-        int  id = authenticationService.fetchUserId(authenticatedUser);
+        int userId = authenticationService.fetchSellerId(authenticatedUser);
 
-        String jwtToken = jwtService.generateToken(authenticatedUser, id);
-        LoginResponse loginResponse = LoginResponse.builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
+        String jwtToken = jwtService.generateToken(authenticatedUser,userId);
+        LoginResponse loginResponse = LoginResponse.builder().accessToken(jwtToken)
+                .expiresIn(jwtService.getExpirationTime()).build();
 
-        return ResponseEntity.ok(loginResponse);
+
+        String refreshToken = jwtService.generateRefreshToken(authenticatedUser,userId);
+        ResponseCookie cookie =  ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true).secure(true).path("/").maxAge(7*24*60*60).sameSite("Lax").build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
+
+        return ResponseEntity.ok().headers(headers).body(loginResponse);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response){
+        String refreshToken = Arrays.stream(request.getCookies()).filter
+                        (c->"refreshToken".equals(c.getName()))
+                .findFirst().map(Cookie::getValue).orElse(null);
+        if(refreshToken==null ){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if(jwtService.isTokenExpired(refreshToken)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String username = jwtService.extractUsername(refreshToken);
+        int userId = jwtService.extractUserId(refreshToken);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
+        String newAccessToken = jwtService.generateToken(user, userId);
+        String newRefreshToken = jwtService.generateRefreshToken(user,userId);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken",newRefreshToken)
+                .httpOnly(true).secure(true).path("/").sameSite("Lax").maxAge(7*24*60*60).build();
+        HttpHeaders headers= new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
+        return ResponseEntity.ok().headers(headers).body(Map.of("accessToken",newAccessToken));
+
+    }
     @GetMapping("/skills")
     public ResponseEntity<List<SkillsResponseDTO>>  getSkills(){
         return new ResponseEntity<>(sellerservice.getSkills(), HttpStatus.OK);
