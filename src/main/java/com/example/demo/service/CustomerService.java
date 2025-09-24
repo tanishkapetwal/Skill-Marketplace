@@ -86,8 +86,7 @@ public class CustomerService {
     }
 
     public List<AllOrderResponse> getallOrders(int id) {
-        User user=userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + id));
-        Customer customer = customerrepo.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+        Customer customer = customerrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
 
         List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
                                                     .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();

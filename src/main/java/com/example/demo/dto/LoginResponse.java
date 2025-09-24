@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 
 @Builder
+@Data
 public class LoginResponse {
-    private String token;
-
+    private String accessToken;
     private long expiresIn;
+    private String role;
 
     public String getToken() {
-        return token;
+        return accessToken;
     }
 }

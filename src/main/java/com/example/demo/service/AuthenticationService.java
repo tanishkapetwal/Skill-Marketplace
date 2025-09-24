@@ -6,6 +6,7 @@ import com.example.demo.dto.RegisterSellerDto;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.dto.RegisterCustomerDto;
 
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Seller;
 import com.example.demo.model.User;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -101,13 +103,22 @@ public class AuthenticationService {
     }
 
 
-    public int fetchUserId(UserDetails userDetails){
-        User user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(RuntimeException::new);
+    public int fetchAdminId(UserDetails userDetails){
+        User user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(()->new UserNotFoundException("Admin Not Found"));
         return user.getId();
+    }
+    public int fetchCustomerId(UserDetails userDetails){
+        User user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(()->new UserNotFoundException("User Not Found"));
+        System.out.println(userDetails.getUsername());
+       Customer customer = customerRepo.findByUserId(user.getId()).orElseThrow(()->new UserNotFoundException("Customer Not Found"));
+        return customer.getId();
+    }
+    public int fetchSellerId(UserDetails userDetails){
+        User user = userRepo.findByEmail(userDetails.getUsername()).orElseThrow(()->new UserNotFoundException("User Not Found"));
+        Seller seller = sellerRepo.findByUserId(user.getId()).orElseThrow(()->new UserNotFoundException("Seller Not Found"));
+        return seller.getId();
 
     }
-
-
     public User signupCustomerByAdmin(RegisterCustomerDto input) {
 
         User user = new User();

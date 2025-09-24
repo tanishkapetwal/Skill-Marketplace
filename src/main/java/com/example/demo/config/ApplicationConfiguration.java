@@ -27,27 +27,8 @@ public class ApplicationConfiguration {
 
     @Bean
     UserDetailsService userDetailsService() {
-
-        return username -> userRepo.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
-
-//        return username -> customerRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User Not found"));
-
-//        return username->userRepo.findByEmail(username)
-//                .map(c -> User.withUsername(c.getUs)
-//                        .password(c.getPassword())
-//                        .roles("CUSTOMER")
-//                        .build())
-//                .orElseGet(() -> sellerRepo.findByEmail(username)
-//                        .map(s -> User.withUsername(s.getUser())
-//                                .password(s.getPassword())
-//                                .roles("SELLER")
-//                                .build())
-//                .orElseGet(()->adminRepo.findByEmail(username)
-//                                .map(a->User.withUsername(a.getUsername()))
-//                                .password(a.getPassword())
-//                                .roles("ADMIN")
-//                                .build())
-//                        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username)));
+        return username -> userRepo.findByEmail(username).
+                orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
 
