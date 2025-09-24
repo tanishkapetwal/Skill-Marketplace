@@ -128,7 +128,7 @@ public class AdminController {
         return ResponseEntity.ok(registeredUser);
     }
     @GetMapping("/all-sellers")
-    public List<Seller> getSellers(){
+    public List<SellerResponseDto> getSellers(){
         return sellerService.getSellers();
 
     }
@@ -158,5 +158,9 @@ public class AdminController {
     @PutMapping("/{id}")
     public Skills updateSkill(@PathVariable int id, @RequestBody Skills skill) {
         return adminService.updateSkill(id, skill);
+    }
+    @GetMapping("/skills")
+    public ResponseEntity<List<SkillsResponseDTO>>  getAllSkills(){
+        return new ResponseEntity<>(sellerService.getSkills(), HttpStatus.OK);
     }
 }
