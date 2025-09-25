@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.CustomerResponseDto;
 import com.example.demo.dto.RegisterCustomerDto;
 import com.example.demo.model.Skills;
 import com.example.demo.model.User;
@@ -8,13 +9,18 @@ import com.example.demo.model.type.Role;
 import com.example.demo.repository.SkillsRepo;
 import com.example.demo.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class AdminService {
-
+    @Autowired
+    private ModelMapper modelMapper;
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final SkillsRepo skillsRepo;
@@ -40,5 +46,10 @@ public class AdminService {
             skill.setDescription(skillDetails.getDescription());
             return skillsRepo.save(skill);
         }).orElseThrow(() -> new RuntimeException("Skill not found"));
+    }
+
+    public List<CustomerResponseDto> getAdmins() {
+        return (userRepo.findByRole(Role.ADMIN).stream().map
+                (user -> modelMapper.map(user, CustomerResponseDto.class)).toList());
     }
 }

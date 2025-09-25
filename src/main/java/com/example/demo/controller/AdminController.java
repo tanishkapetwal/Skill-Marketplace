@@ -121,6 +121,11 @@ public class AdminController {
         return customerService.getCustomers();
 
     }
+    @GetMapping("/all-admins")
+    public List<CustomerResponseDto> getAdmins(){
+        return adminService.getAdmins();
+
+    }
     @PostMapping("/add-seller")
     public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto seller){
         sellerService.addSeller(seller);
