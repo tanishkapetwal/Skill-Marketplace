@@ -8,6 +8,7 @@ import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.SellerService;
 import com.example.demo.service.SkillsListingService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,51 +47,64 @@ public class CustomerController {
     private UserDetailsService userDetailsService;
     @Autowired
     private final CustomerService service;
+    @Autowired
+    private SellerService sellerService;
 
     int userId;
-    public int getUserId(HttpServletRequest request){
+
+    public int getUserId(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
         userId = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
-       return userId;
+        return userId;
     }
+
     @GetMapping("/")
-    public CustomerResponseDto getCustomerById(HttpServletRequest request){
-       userId = getUserId(request);
+    public CustomerResponseDto getCustomerById(HttpServletRequest request) {
+        userId = getUserId(request);
         return service.getCustomerbyId(userId);
     }
 
     @GetMapping("/skills")
-    public ResponseEntity<List<SkillsListingDTO>> getallskills(){
+    public ResponseEntity<List<SkillsListingDTO>> getallskills() {
         return new ResponseEntity<>(service.getallskills(), HttpStatus.OK);
     }
 
     @GetMapping("/skills/{id}")
-    public ResponseEntity<SkillsListingDTO> getallskillsbyId(@PathVariable Integer id){
+    public ResponseEntity<SkillsListingDTO> getallskillsbyId(@PathVariable Integer id) {
         return new ResponseEntity<>(service.getallskillsbyId(id), HttpStatus.OK);
     }
 
 
     @PostMapping("/order/{listingId}")
-    public ResponseEntity<Orders> createOrder(@PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto, HttpServletRequest request){
+    public ResponseEntity<Orders> createOrder(@PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto, HttpServletRequest request) {
         userId = getUserId(request);
         System.out.println(createorderdto);
-        service.createOrder(userId,listingId,createorderdto);
+        service.createOrder(userId, listingId, createorderdto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/email/{listingId}")
+    public ResponseEntity<?> sendEmail(@PathVariable int listingId) {
+        System.out.println("Email Sent");
+        sellerService.sendEmail(listingId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/all-orders")
-    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request){
+    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request) {
         userId = getUserId(request);
         return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
     }
 
+
     @DeleteMapping(value = {"/delete"})
-    public ResponseEntity<Void>  deleteCustomer(HttpServletRequest request){
+    public ResponseEntity<Void> deleteCustomer(HttpServletRequest request) {
         userId = getUserId(request);
         service.deleteCustomer(userId);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/order/{orderId}/rate")
     public ResponseEntity<String> rateOrder(
             @PathVariable int orderId,
