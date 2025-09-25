@@ -47,10 +47,13 @@ public class AuthController {
         return authenticate(loginUserDto, response);
     }
     @PostMapping("/seller/signup")
-    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto) {
+    public ResponseEntity<?> addSeller(@RequestBody RegisterSellerDto registerSellerDto,HttpServletResponse response) {
         User registeredSeller = authenticationService.signupSeller(registerSellerDto);
+        LoginUserDto loginUserDto= new LoginUserDto();
+        loginUserDto.setEmail(registeredSeller.getEmail());
+        loginUserDto.setPassword(registerSellerDto.getPassword());
+        return authenticate(loginUserDto, response);
 
-        return ResponseEntity.ok(registeredSeller);
     }
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto,HttpServletResponse response) {
