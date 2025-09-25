@@ -37,6 +37,10 @@ public class CustomerService {
     private OrdersRepo ordersrepo;
     @Autowired
     private ModelMapper modelmapper;
+    @Autowired
+    private OrdersRepo ordersRepo;
+    @Autowired
+    private RatingService ratingService;
     public List<CustomerResponseDto> getCustomers() {
         return (customerrepo.findAll().stream().map
                 (customer -> modelmapper.map(customer, CustomerResponseDto.class)).toList());
@@ -71,7 +75,7 @@ public class CustomerService {
         Orders orders = new Orders();
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
-        orders.setCustomer(customerrepo.findByUserId(userRepo.findById(custid).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + custid)).getId()).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + custid)));
+        orders.setCustomer(customerrepo.findById(custid).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + custid)));
         orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(() -> new ResourceNotFoundException("SkillsListing not found with id" + listingId)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
@@ -86,10 +90,7 @@ public class CustomerService {
 
         return orderResponseList;
     }
-    @Autowired
-    private OrdersRepo ordersRepo;
-    @Autowired
-    private RatingService ratingService;
+
 
     public Orders findOrderById(int orderId) {
         return ordersRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));

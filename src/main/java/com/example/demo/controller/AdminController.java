@@ -144,12 +144,12 @@ public class AdminController {
     }
     @DeleteMapping("/remove/customer/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable int id){
-        adminService.deleteUser(id);
+        adminService.deleteCustomer(id);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/remove/seller/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable int id){
-        adminService.deleteUser(id);
+        adminService.deleteSeller(id);
 
         return ResponseEntity.ok().build();
     }
