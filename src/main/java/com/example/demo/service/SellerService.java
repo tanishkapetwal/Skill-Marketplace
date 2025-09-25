@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -36,8 +37,10 @@ public class SellerService {
     @Autowired
     private EmailService emailService;
 
-    public User getSellerById(Integer id) {
-        return userRepo.findById(id).orElseThrow();
+    public SellerResponseDto getSellerById(Integer id) {
+//        Seller seller =  sellerRepo.findById(id).orElseThrow();
+        SellerResponseDto sellerResponseDto = modelmapper.map(userRepo.findBySellerId(id), SellerResponseDto.class);
+        return sellerResponseDto;
 
     }
         public SkillsListing addSkillsListing ( int skillId, CreateListingDTO createListingDTO,int sellerId){
@@ -49,7 +52,7 @@ public class SellerService {
 
             skillsListing.setSkills(skillsRepo.findById(skillId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + skillId)));
 
-            skillsListing.setSeller(sellerRepo.findByUserId(userRepo.findById(sellerId).orElseThrow().getId()).orElseThrow());
+            skillsListing.setSeller(sellerRepo.findById(sellerId).orElseThrow());
 
             skillsListing.setTitle(createListingDTO.getTitle());
 
@@ -78,8 +81,7 @@ public class SellerService {
     public void deleteSeller(Integer id) {
         sellerRepo.deleteById(id);
     }
-    public List<SellerOrdersDTO> allOrderRequest(int userId) {
-        int seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow().getId()).orElseThrow().getId();
+    public List<SellerOrdersDTO> allOrderRequest(int seller_id) {
 
         List<SellerOrdersDTO> sellerOrdersDTOS =  orderRepo.findBySkillslisting_SellerId(seller_id).
                                                 stream().map(orders->modelmapper.map(orders, SellerOrdersDTO.class)).
@@ -88,11 +90,10 @@ public class SellerService {
        return sellerOrdersDTOS;
     }
 
-    public String changeStatus(int userId, int order_id, Status status) {
-        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId)).getId()).orElseThrow(() -> new ResourceNotFoundException("Seller not found with this id")).getId();
+    public String changeStatus(int  seller_id, int order_id, Status status) {
         Orders order = orderRepo.findById(order_id).orElseThrow();
         Integer sellerIdfromOrder = order.getSkillslisting().getSeller().getId();
-        if(!seller_id.equals(sellerIdfromOrder))
+        if(seller_id != sellerIdfromOrder)
             throw new RuntimeException("Can't access this page!");
 
         order.setStatus(status);
@@ -129,13 +130,9 @@ public class SellerService {
                 (seller -> modelmapper.map(seller, SellerResponseDto.class)).toList());
     }
 
-
-
-
-    public List<SkillsListingDTO> getListing(int userId){
-        Integer seller_id = sellerRepo.findByUserId(userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id" + userId)).getId()).orElseThrow(() -> new ResourceNotFoundException("Seller not found with this id")).getId();
-        List<SkillsListingDTO> obj= skillsListingRepo.findBySellerId(seller_id).
-                                    stream().map(s->modelmapper.map(s,SkillsListingDTO.class)).toList();
+    public List<SkillsListingDTO> getListing(int sellerId){
+        List<SkillsListingDTO> obj= skillsListingRepo.findBySellerId(sellerId).stream()
+                .map(s->modelmapper.map(s,SkillsListingDTO.class)).toList();
         return obj;
     }
 

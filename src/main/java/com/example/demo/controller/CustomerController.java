@@ -30,7 +30,7 @@ import java.util.Map;
 import static java.time.LocalDate.*;
 
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
@@ -106,7 +106,7 @@ public class CustomerController {
 
         String refreshToken = jwtService.generateRefreshToken(authenticatedUser,userId);
         ResponseCookie cookie =  ResponseCookie.from("refreshToken", refreshToken)
-                        .httpOnly(true).secure(true).path("/").maxAge(7*24*60*60).sameSite("Lax").build();
+                        .httpOnly(true).secure(false).path("/").maxAge(7*24*60*60).sameSite("None").build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
