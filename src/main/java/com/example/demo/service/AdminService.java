@@ -3,9 +3,12 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CustomerResponseDto;
 import com.example.demo.dto.RegisterCustomerDto;
+import com.example.demo.model.Customer;
 import com.example.demo.model.Skills;
 import com.example.demo.model.User;
 import com.example.demo.model.type.Role;
+import com.example.demo.repository.CustomerRepo;
+import com.example.demo.repository.SellerRepo;
 import com.example.demo.repository.SkillsRepo;
 import com.example.demo.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +27,15 @@ public class AdminService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final SkillsRepo skillsRepo;
-    public void deleteUser(int id) {
-        userRepo.deleteById(id);
+    private final CustomerRepo customerRepo;
+    private final SellerRepo sellerRepo;
+    public void deleteCustomer(int id) {
+        int userId = customerRepo.findById(id).orElseThrow().getUser().getId();
+        userRepo.deleteById(userId);
+    }
+    public void deleteSeller(int id) {
+        int userId = sellerRepo.findById(id).orElseThrow().getUser().getId();
+        userRepo.deleteById(userId);
     }
     public User signupAdmin(RegisterCustomerDto input) {
 
