@@ -48,13 +48,6 @@ public class CustomerService {
     }
 
     public Customer addCustomers(RegisterCustomerDto customer) {
-//        Customer cust = Customer.builder().name(customer.getName()).email(customer.getEmail()).
-//                phone(customer.getPhone()).password(customer.getPassword()).createdAt(LocalDateTime.now()).build();
-//        cust.setName(customer.getName());
-//        cust.setEmail(customer.getEmail());
-//        cust.setPhone(customer.getPhone());
-//        cust.setPassword(customer.getPassword());
-//        cust.setCreatedAt();
 
         Customer cust = modelmapper.map(customer, Customer.class);
         return customerrepo.save(cust);
