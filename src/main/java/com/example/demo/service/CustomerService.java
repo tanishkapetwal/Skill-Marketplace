@@ -43,8 +43,8 @@ public class CustomerService {
     }
 
     public CustomerResponseDto getCustomerbyId(Integer id) {
-
-        return modelmapper.map(userRepo.findById(id), CustomerResponseDto.class);
+        int userId = customerrepo.findById(id).orElseThrow().getUser().getId();
+        return modelmapper.map(userRepo.findById(userId), CustomerResponseDto.class);
     }
 
     public Customer addCustomers(RegisterCustomerDto customer) {

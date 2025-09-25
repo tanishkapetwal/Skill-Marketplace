@@ -45,11 +45,12 @@ public class SellerController {
         String authHeader = request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
         userId = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
+        System.out.println(userId);
         return userId;
     }
 
     @GetMapping(value = {"/"})
-    public User getSeller(HttpServletRequest request) {
+    public SellerResponseDto getSeller(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         String token = authHeader.split(" ")[1];
         int id = jwtService.extractClaim(token, claims -> claims.get("id", Integer.class));
@@ -83,9 +84,21 @@ public class SellerController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
 
+        System.out.println(userId);
         return ResponseEntity.ok().headers(headers).body(loginResponse);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request){
+        ResponseCookie cookie =  ResponseCookie.from("refreshToken", "")
+                .httpOnly(true).secure(true).path("/").maxAge(0).sameSite("Lax").build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
+
+        return ResponseEntity.ok().headers(headers).build();
+
+    }
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response){
         String refreshToken = Arrays.stream(request.getCookies()).filter
@@ -111,6 +124,7 @@ public class SellerController {
     }
     @GetMapping("/skills")
     public ResponseEntity<List<SkillsResponseDTO>>  getSkills(){
+
         return new ResponseEntity<>(sellerservice.getSkills(), HttpStatus.OK);
     }
 
