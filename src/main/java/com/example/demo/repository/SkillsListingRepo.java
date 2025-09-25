@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface SkillsListingRepo extends JpaRepository<SkillsListing, Integer> {
 
-    Optional<Seller> findBySellerId(int seller_id);
-    List<SkillsListing> findBySellerId(Integer seller_id);
+    List<SkillsListing> findBySellerId(Integer sellerId);   //sellerId= Spring automatically uses "Seller_Obj.id"
 }
+
