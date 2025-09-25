@@ -25,6 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Relation;
+
 @Service
 public class AuthenticationService {
     @Autowired
@@ -144,5 +146,21 @@ public class AuthenticationService {
         return savedUser;
     }
 
+    public int findUserId(UserDetails authenticatedUser) {
+        User user= userRepo.findByEmail(authenticatedUser.getUsername()).orElseThrow(RuntimeException::new);
+        if(user.getRole().equals(Role.SELLER))
+            return fetchSellerId(authenticatedUser);
+        else if(user.getRole().equals(Role.ADMIN))
+            return fetchAdminId(authenticatedUser);
+        else if(user.getRole().equals(Role.CUSTOMER))
+            return fetchCustomerId(authenticatedUser);
+        return 0;
+
+    }
+
+    public String getUser(String username) {
+
+        return userRepo.findByEmail(username).orElseThrow(RuntimeException::new).getRole().name();
+    }
 }
 

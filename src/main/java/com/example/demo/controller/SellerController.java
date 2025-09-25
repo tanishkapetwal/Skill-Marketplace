@@ -3,13 +3,16 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.model.*;
 
+import com.example.demo.model.type.Role;
 import com.example.demo.model.type.Status;
+import com.example.demo.repository.UserRepo;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.SellerService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpHeaders;
@@ -29,6 +32,7 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/seller")
+@RequiredArgsConstructor
 public class SellerController {
 
     @Autowired
@@ -39,6 +43,8 @@ public class SellerController {
     private SellerService sellerservice;
     @Autowired
     private UserDetailsService userDetailsService;
+    private final UserRepo userRepo;
+
     int userId;
 
     public int getUserId(HttpServletRequest request) {
@@ -58,47 +64,6 @@ public class SellerController {
 
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> addSeller(@RequestBody RegisterSellerDto registerSellerDto) {
-        User registeredSeller = authenticationService.signupSeller(registerSellerDto);
-
-        return ResponseEntity.ok(registeredSeller);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        Authentication authentication = authenticationService.authenticate(loginUserDto);
-        UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
-
-        int userId = authenticationService.fetchSellerId(authenticatedUser);
-
-        String jwtToken = jwtService.generateToken(authenticatedUser,userId);
-        LoginResponse loginResponse = LoginResponse.builder().accessToken(jwtToken)
-                .expiresIn(jwtService.getExpirationTime()).build();
-
-
-        String refreshToken = jwtService.generateRefreshToken(authenticatedUser,userId);
-        ResponseCookie cookie =  ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true).secure(true).path("/").maxAge(7*24*60*60).sameSite("Lax").build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-
-        System.out.println(userId);
-        return ResponseEntity.ok().headers(headers).body(loginResponse);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request){
-        ResponseCookie cookie =  ResponseCookie.from("refreshToken", "")
-                .httpOnly(true).secure(true).path("/").maxAge(0).sameSite("Lax").build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-
-        return ResponseEntity.ok().headers(headers).build();
-
-    }
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response){
         String refreshToken = Arrays.stream(request.getCookies()).filter
