@@ -64,29 +64,6 @@ public class SellerController {
 
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response){
-        String refreshToken = Arrays.stream(request.getCookies()).filter
-                        (c->"refreshToken".equals(c.getName()))
-                .findFirst().map(Cookie::getValue).orElse(null);
-        if(refreshToken==null ){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if(jwtService.isTokenExpired(refreshToken)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String username = jwtService.extractUsername(refreshToken);
-        int userId = jwtService.extractUserId(refreshToken);
-        UserDetails user = userDetailsService.loadUserByUsername(username);
-        String newAccessToken = jwtService.generateToken(user, userId);
-        String newRefreshToken = jwtService.generateRefreshToken(user,userId);
-        ResponseCookie cookie = ResponseCookie.from("refreshToken",newRefreshToken)
-                .httpOnly(true).secure(true).path("/").sameSite("Lax").maxAge(7*24*60*60).build();
-        HttpHeaders headers= new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-        return ResponseEntity.ok().headers(headers).body(Map.of("accessToken",newAccessToken));
-
-    }
     @GetMapping("/skills")
     public ResponseEntity<List<SkillsResponseDTO>>  getSkills(){
 

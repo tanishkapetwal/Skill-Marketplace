@@ -36,76 +36,20 @@ import java.util.Map;
 public class AdminController {
 
     @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
     @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
     @Autowired
-    private SkillsService skillsService;
+    private final SkillsService skillsService;
     @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
     @Autowired
-    private SellerService sellerService;
+    private final SellerService sellerService;
     @Autowired
-    private JWTService jwtService;
+    private final JWTService jwtService;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto, HttpServletResponse response) {
-        Authentication authentication = authenticationService.authenticate(loginUserDto);
-
-        UserDetails authenticatedUser = (UserDetails) authentication.getPrincipal();
-
-        int userId = authenticationService.fetchAdminId(authenticatedUser);
-        String jwtToken = jwtService.generateToken(authenticatedUser,userId);
-        LoginResponse loginResponse = LoginResponse.builder().accessToken(jwtToken)
-                .expiresIn(jwtService.getExpirationTime()).build();
-
-        String refreshToken = jwtService.generateRefreshToken(authenticatedUser,userId);
-        ResponseCookie cookie =  ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true).secure(true).path("/").maxAge(7*24*60*60).sameSite("Lax").build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-
-        return ResponseEntity.ok().headers(headers).body(loginResponse);
-    }
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request){
-        ResponseCookie cookie =  ResponseCookie.from("refreshToken", "")
-                .httpOnly(true).secure(true).path("/").maxAge(0).sameSite("Lax").build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-
-        return ResponseEntity.ok().headers(headers).build();
-
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response){
-        String refreshToken = Arrays.stream(request.getCookies()).filter
-                        (c->"refreshToken".equals(c.getName()))
-                .findFirst().map(Cookie::getValue).orElse(null);
-        System.out.println("Refresh Token is: "+refreshToken);
-        if(refreshToken==null ){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if(jwtService.isTokenExpired(refreshToken)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String username = jwtService.extractUsername(refreshToken);
-        int userId = jwtService.extractUserId(refreshToken);
-        UserDetails user = userDetailsService.loadUserByUsername(username);
-        String newAccessToken = jwtService.generateToken(user, userId);
-        String newRefreshToken = jwtService.generateRefreshToken(user,userId);
-        ResponseCookie cookie = ResponseCookie.from("refreshToken",newRefreshToken)
-                .httpOnly(true).secure(true).path("/").sameSite("Lax").maxAge(7*24*60*60).build();
-        HttpHeaders headers= new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,cookie.toString());
-        return ResponseEntity.ok().headers(headers).body(Map.of("accessToken",newAccessToken));
-
-    }
     @PostMapping("/add-skills")
     public ResponseEntity<Skills> addSkills(@RequestBody Skills skill){
         return new ResponseEntity<>(skillsService.addSkills(skill), HttpStatus.OK);
