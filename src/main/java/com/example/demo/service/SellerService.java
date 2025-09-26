@@ -129,9 +129,9 @@ public class SellerService {
 
 
         emailDetails.setRecipient(email);
-        emailDetails.setSubject("Order Request for  has been Added");
+        emailDetails.setSubject("Order Request for you has been Received");
         emailDetails.setMsgBody("Dear "+ ",\n Seller " +
-                "You have a new order.\n Please check\n"+
+                "You have a new order.\n Please check your account\n"+
                 "\n\n Best Regards\n" +
                 "Team TechMate");
         return emailDetails;
