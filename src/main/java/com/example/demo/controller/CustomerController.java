@@ -84,12 +84,6 @@ public class CustomerController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/email/{listingId}")
-    public ResponseEntity<?> sendEmail(@PathVariable int listingId) {
-        System.out.println("Email Sent");
-        sellerService.sendEmail(listingId);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/all-orders")
     public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request) {

@@ -8,10 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 
-@EnableAutoConfiguration
-@EnableJpaRepositories
-@Configuration
-@ComponentScan
+@SpringBootApplication
 public class DemoApplication {
 
 	public static void main(String[] args) {
