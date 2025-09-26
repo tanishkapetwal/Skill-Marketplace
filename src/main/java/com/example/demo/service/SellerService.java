@@ -118,36 +118,15 @@ public class SellerService {
                 "your order has been accepted by the teacher.\n"+
                 "For connecting with teacher here are the details:\n"+"Name: "
                 + order.getSkillslisting().getSeller().getUser().getName()+"\nSkill: "+ order.getSkillslisting().getSkills().getName()
-                +"\nAppointment Date: "+ order.getAppointmentStart()+"\nEmail: "+ order.getCustomer().getUser().getEmail()
-                +"\nPhone Number "+ order.getCustomer().getUser().getPhone()+
-                "\n\n Best Regards\n" +
-                "Team TechMate");
-        return emailDetails;
-    }
-    private static EmailDetails getSellerEmailDetails(String email) {
-        EmailDetails emailDetails = new EmailDetails();
-
-
-        emailDetails.setRecipient(email);
-        emailDetails.setSubject("Order Request for  has been Added");
-        emailDetails.setMsgBody("Dear "+ ",\n Seller " +
-                "You have a new order.\n Please check\n"+
+                +"\nAppointment Date: "+ order.getAppointmentStart()+"\nEmail: "+ order.getSkillslisting().getSeller().getUser().getEmail()
+                +"\nPhone Number "+ order.getSkillslisting().getSeller().getUser().getPhone()+
                 "\n\n Best Regards\n" +
                 "Team TechMate");
         return emailDetails;
     }
 
-    public void sendEmail(int listingId) {
-        SkillsListing skillsListing=skillsListingRepo.findById(listingId).orElseThrow();
-        int sellerId = skillsListing.getSeller().getId();
 
-        User user = userRepo.findBySellerId(sellerId).orElseThrow();
-        String email = user.getEmail();
 
-        EmailDetails emailDetails =   getSellerEmailDetails(email);
-        emailService.sendSimpleMail(emailDetails);
-        System.out.println(sellerId);
-    }
     public List<SellerResponseDto> getSellers() {
         return (sellerRepo.findAll().stream().map
                 (seller -> modelmapper.map(seller, SellerResponseDto.class)).toList());

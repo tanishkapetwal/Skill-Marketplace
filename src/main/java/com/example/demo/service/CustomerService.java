@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.dto.*;
+import com.example.demo.model.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,11 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Customer;
-import com.example.demo.model.Orders;
-import com.example.demo.model.SkillsListing;
-import com.example.demo.model.User;
+
 import static com.example.demo.model.type.Status.PENDING;
+
+
 import com.example.demo.repository.CustomerRepo;
 import com.example.demo.repository.OrdersRepo;
 import com.example.demo.repository.SkillsListingRepo;
@@ -41,6 +41,8 @@ public class CustomerService {
     private OrdersRepo ordersRepo;
     @Autowired
     private RatingService ratingService;
+    @Autowired
+    private EmailService emailService;
     public List<CustomerResponseDto> getCustomers() {
         return (customerrepo.findAll().stream().map
                 (customer -> modelmapper.map(customer, CustomerResponseDto.class)).toList());
@@ -79,6 +81,7 @@ public class CustomerService {
         orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(() -> new ResourceNotFoundException("SkillsListing not found with id" + listingId)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
+        sendEmail(listingId);
         ordersrepo.save(orders);
     }
 
@@ -99,7 +102,7 @@ public class CustomerService {
     public String saveOrder(int orderId, int customerId, int ratingValue) {
         Orders order = this.findOrderById(orderId);
 
-        if (order.getCustomer().getUser().getId() != customerId) {
+        if (order.getCustomer().getId() != customerId) {
             return "You can only rate your own orders";
         }
 
@@ -113,10 +116,31 @@ public class CustomerService {
         skillslistingrepo.save(skillsListing);
         return "Sucessfully submiited rating";
     }
+    public void sendEmail(int listingId) {
+        SkillsListing skillsListing=skillslistingrepo.findById(listingId).orElseThrow();
+        int sellerId = skillsListing.getSeller().getId();
+
+        User user = userRepo.findBySellerId(sellerId).orElseThrow();
+        String email = user.getEmail();
+
+        EmailDetails emailDetails = getSellerEmailDetails(email);
+        emailService.sendSimpleMail(emailDetails);
+        System.out.println(sellerId);
+    }
 
     public void updateRatings(int orderId) {
         ratingService.updateRatingsAfterOrder(orderId);
     }
 
+    private EmailDetails getSellerEmailDetails(String email) {
 
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient(email);
+        emailDetails.setSubject("Order Request for  has been Added");
+        emailDetails.setMsgBody("Dear "+ ",\n Seller " +
+                "You have a new order.\n Please check\n"+
+                "\n\n Best Regards\n" +
+                "Team TechMate");
+        return emailDetails;
+    }
 }
