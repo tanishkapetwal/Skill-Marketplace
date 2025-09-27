@@ -118,8 +118,23 @@ public class SellerService {
                 "your order has been accepted by the teacher.\n"+
                 "For connecting with teacher here are the details:\n"+"Name: "
                 + order.getSkillslisting().getSeller().getUser().getName()+"\nSkill: "+ order.getSkillslisting().getSkills().getName()
+
                 +"\nAppointment Date: "+ order.getAppointmentStart()+"\nEmail: "+ order.getSkillslisting().getSeller().getUser().getEmail()
                 +"\nPhone Number "+ order.getSkillslisting().getSeller().getUser().getPhone()+
+              
+                "\n\n Best Regards\n" +
+                "Team TechMate");
+        return emailDetails;
+    }
+    private static EmailDetails getSellerEmailDetails(String email) {
+        EmailDetails emailDetails = new EmailDetails();
+
+
+        emailDetails.setRecipient(email);
+        emailDetails.setSubject("Order Request for you has been Received");
+        emailDetails.setMsgBody("Dear "+ ",\n Seller " +
+                "You have a new order.\n Please check your account\n"+
+
                 "\n\n Best Regards\n" +
                 "Team TechMate");
         return emailDetails;
