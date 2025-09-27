@@ -140,8 +140,6 @@ public class SellerService {
         return emailDetails;
     }
 
-
-
     public List<SellerResponseDto> getSellers() {
         return (sellerRepo.findAll().stream().map
                 (seller -> modelmapper.map(seller, SellerResponseDto.class)).toList());

@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -85,12 +87,17 @@ public class CustomerController {
     }
 
 
-    @GetMapping("/all-orders")
-    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request) {
-        userId = getUserId(request);
-        return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
-    }
+//    @GetMapping("/all-orders")
+//    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request) {
+//        userId = getUserId(request);
+//        return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
+//    }
 
+    @GetMapping("/orders")
+    public Page<AllOrderResponse> getAllProducts(@RequestParam int page, Pageable pageable, HttpServletRequest request) {
+        userId = getUserId(request);
+        return service.getPaginatedProducts(pageable, userId,page);
+    }
 
     @DeleteMapping(value = {"/delete"})
     public ResponseEntity<Void> deleteCustomer(HttpServletRequest request) {

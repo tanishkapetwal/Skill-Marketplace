@@ -7,6 +7,10 @@ import com.example.demo.dto.*;
 import com.example.demo.model.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -85,15 +89,19 @@ public class CustomerService {
         ordersrepo.save(orders);
     }
 
-    public List<AllOrderResponse> getallOrders(int id) {
-        Customer customer = customerrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+//    public List<AllOrderResponse> getallOrders(int id) {
+//        Customer customer = customerrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found with id" + id));
+//
+//        List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
+//                                                    .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();
+//
+//        return orderResponseList;
+//    }
 
-        List<AllOrderResponse> orderResponseList = customer.getOrder().stream()
-                                                    .map(order -> modelmapper.map(order,AllOrderResponse.class)).toList();
-
-        return orderResponseList;
+    public Page<AllOrderResponse> getPaginatedProducts(Pageable pageable, int id, int pageIndex) {
+        Pageable page= PageRequest.of(pageIndex,5 ,Sort.by("id").descending());
+        return ordersrepo.findByCustomerId(page, id).map(order->modelmapper.map(order, AllOrderResponse.class));
     }
-
 
     public Orders findOrderById(int orderId) {
         return ordersRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
