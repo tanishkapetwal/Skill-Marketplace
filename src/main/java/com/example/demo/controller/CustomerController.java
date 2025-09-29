@@ -33,7 +33,7 @@ import java.util.Map;
 import static java.time.LocalDate.*;
 
 
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+// @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
