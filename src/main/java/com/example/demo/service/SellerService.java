@@ -102,12 +102,12 @@ public class SellerService {
 
         Notification notification = new Notification( order_id,"Order status changed to"+status.toString().toUpperCase());
         messagingTemplate.convertAndSend("/topic/orders/"+order.getCustomer().getUser().getId(), notification);
-
+        String str = "";
         if(status.toString().equals("ACCEPTED")){
             EmailDetails emailDetails = getEmailDetails(order_id, order);
-            emailService.sendSimpleMail(emailDetails);
+           str = emailService.sendSimpleMail(emailDetails);
         }
-        return "Order " +order_id+"updated to"+status.toString();
+        return "Order " +order_id+"updated to"+status+ " and " +str;
     }
 
     private static EmailDetails getEmailDetails(int order_id, Orders order) {

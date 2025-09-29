@@ -82,7 +82,7 @@ public class CustomerController {
     public ResponseEntity<Orders> createOrder(@PathVariable int listingId, @RequestBody CreateOrderDTO createorderdto, HttpServletRequest request) {
         userId = getUserId(request);
         System.out.println(createorderdto);
-        service.createOrder(userId, listingId, createorderdto);
+        String str = service.createOrder(userId, listingId, createorderdto);
         return ResponseEntity.ok().build();
     }
 
