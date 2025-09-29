@@ -68,13 +68,19 @@ public class CustomerController {
     }
 
     @GetMapping("/skills")
-    public ResponseEntity<List<SkillsListingDTO>> getallskills() {
-        return new ResponseEntity<>(service.getallskills(), HttpStatus.OK);
+    public Page<SkillsListingDTO> getallskills(@RequestParam int page, Pageable pageable) {
+        return service.getallskills(pageable,page);
     }
 
     @GetMapping("/skills/{id}")
     public ResponseEntity<SkillsListingDTO> getallskillsbyId(@PathVariable Integer id) {
         return new ResponseEntity<>(service.getallskillsbyId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/orders")
+    public Page<AllOrderResponse> getAllProducts(@RequestParam int page, Pageable pageable, HttpServletRequest request) {
+        userId = getUserId(request);
+        return service.getPaginatedProducts(pageable, userId,page);
     }
 
 
@@ -84,19 +90,6 @@ public class CustomerController {
         System.out.println(createorderdto);
         String str = service.createOrder(userId, listingId, createorderdto);
         return ResponseEntity.ok().build();
-    }
-
-
-//    @GetMapping("/all-orders")
-//    public ResponseEntity<List<AllOrderResponse>> getallOrders(HttpServletRequest request) {
-//        userId = getUserId(request);
-//        return new ResponseEntity<>(service.getallOrders(userId), HttpStatus.OK);
-//    }
-
-    @GetMapping("/orders")
-    public Page<AllOrderResponse> getAllProducts(@RequestParam int page, Pageable pageable, HttpServletRequest request) {
-        userId = getUserId(request);
-        return service.getPaginatedProducts(pageable, userId,page);
     }
 
     @DeleteMapping(value = {"/delete"})

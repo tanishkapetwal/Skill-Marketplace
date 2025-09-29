@@ -67,10 +67,14 @@ public class CustomerService {
         customerrepo.deleteById(id);
     }
 
-    public List<SkillsListingDTO> getallskills() {
-        return skillslistingrepo.findAll().stream().map(skills->modelmapper.map(skills, SkillsListingDTO.class)).toList();
+    public Page<SkillsListingDTO>getallskills(Pageable pageable,int pageIndex) {
+        Pageable page= PageRequest.of(pageIndex,6 ,Sort.by("id").descending());
+        return skillslistingrepo.findAll(page).map(skills->modelmapper.map(skills, SkillsListingDTO.class));
     }
-
+    public Page<AllOrderResponse> getPaginatedProducts(Pageable pageable, int id, int pageIndex) {
+        Pageable page= PageRequest.of(pageIndex,5 ,Sort.by("id").descending());
+        return ordersrepo.findByCustomerId(page, id).map(order->modelmapper.map(order, AllOrderResponse.class));
+    }
 
     public SkillsListingDTO getallskillsbyId(Integer id) {
         return modelmapper.map(skillslistingrepo.findById(id), SkillsListingDTO.class);
@@ -99,10 +103,7 @@ public class CustomerService {
 //        return orderResponseList;
 //    }
 
-    public Page<AllOrderResponse> getPaginatedProducts(Pageable pageable, int id, int pageIndex) {
-        Pageable page= PageRequest.of(pageIndex,5 ,Sort.by("id").descending());
-        return ordersrepo.findByCustomerId(page, id).map(order->modelmapper.map(order, AllOrderResponse.class));
-    }
+
 
     public Orders findOrderById(int orderId) {
         return ordersRepo.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
