@@ -77,7 +77,7 @@ public class CustomerService {
 
     }
 
-    public void createOrder(int custid, int listingId, CreateOrderDTO createOrderDTO){
+    public String createOrder(int custid, int listingId, CreateOrderDTO createOrderDTO){
         Orders orders = new Orders();
 
         orders =   modelmapper.map(createOrderDTO, Orders.class);
@@ -85,8 +85,9 @@ public class CustomerService {
         orders.setSkillslisting(skillslistingrepo.findById(listingId).orElseThrow(() -> new ResourceNotFoundException("SkillsListing not found with id" + listingId)));
         orders.setOrderDate(LocalDate.now());
         orders.setStatus(PENDING);
-        sendEmail(listingId);
+        String str = sendEmail(listingId);
         ordersrepo.save(orders);
+        return "Order created sucessfully! Request Sent to Teacher "+ str;
     }
 
 //    public List<AllOrderResponse> getallOrders(int id) {
@@ -124,7 +125,7 @@ public class CustomerService {
         skillslistingrepo.save(skillsListing);
         return "Sucessfully submiited rating";
     }
-    public void sendEmail(int listingId) {
+    public String sendEmail(int listingId) {
         SkillsListing skillsListing=skillslistingrepo.findById(listingId).orElseThrow();
         int sellerId = skillsListing.getSeller().getId();
 
@@ -132,8 +133,8 @@ public class CustomerService {
         String email = user.getEmail();
 
         EmailDetails emailDetails = getSellerEmailDetails(email);
-        emailService.sendSimpleMail(emailDetails);
-        System.out.println(sellerId);
+        return  emailService.sendSimpleMail(emailDetails);
+
     }
 
     public void updateRatings(int orderId) {

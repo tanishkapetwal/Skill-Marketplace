@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.model.EmailDetails;
+import jakarta.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,12 @@ public class EmailService{
         }
 
         // Catch block to handle the exceptions
+        catch(MailAuthenticationException ex){
+            return "Wrong email"+ex;
+        }
+        catch(MailSendException ex){
+            return "Mail not sent! Try Again"+ex ;
+        }
         catch (Exception e) {
             return "Error while Sending Mail";
         }
