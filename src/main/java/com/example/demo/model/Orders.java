@@ -29,7 +29,7 @@ public class Orders {
     private LocalDate orderDate;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id")   // This is the name u give to column in this table referencing other table's id
     private Customer customer;
 
     @ManyToOne
