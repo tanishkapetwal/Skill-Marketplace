@@ -20,11 +20,10 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Builder
 public class Customer {
-
-    public Customer() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
