@@ -33,7 +33,7 @@ public class Orders {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "skills_listing_id") // Or whatever your foreign key column is
+    @JoinColumn(name = "skills_listing_id") // This is the name u give to column in this table referencing other table's id
     private SkillsListing skillslisting;
 }
 
