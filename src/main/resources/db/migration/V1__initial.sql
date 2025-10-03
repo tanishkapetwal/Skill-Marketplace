@@ -93,7 +93,7 @@ CREATE SEQUENCE users_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq');
--- Insert baseline data
+
 INSERT INTO users (id, created_at, email, name, password, phone, role, updated_at) VALUES
 (1, '2025-09-19 14:08:43.315796', 'ashutosh.acharya@argusoft.com', 'Ashutosh Acharya', '$2a$12$HM49kLcjNZ/A.D.I7Y3uru45j0qn/wW.rXPECWcNm0EScj3YQdF3O', '8093107856', 'SELLER', '2025-09-19 14:08:43.315872'),
 (3, '2025-09-22 18:03:39.078049', 'ashutosh20.acharya@gmail.com', 'Ashutosh Acharya', '$2a$10$v8IssBTjpw7p4pGaBG8tIe3ZrQWc9k50UlioqzDilicdyry.k1ija', '8093107856', 'ADMIN', '2025-09-22 18:03:39.078132'),
@@ -107,14 +107,14 @@ INSERT INTO seller (id, avg_rating, bio, rating, rating_count, user_id) VALUES
 (1, NULL, 'i know all things', 0, 0, 1);
 INSERT INTO skills (id, category, description, name) VALUES
 (5, 'LANGUAGE', 'Learn Hindi With Ashutosh Acharya', 'Hindi');
--- Set sequence values to current max IDs
+
 SELECT setval('customer_id_seq', (SELECT COALESCE(MAX(id), 1) FROM customer));
 SELECT setval('orders_id_seq', 16);
 SELECT setval('seller_id_seq', (SELECT COALESCE(MAX(id), 1) FROM seller));
 SELECT setval('skills_id_seq', (SELECT COALESCE(MAX(id), 1) FROM skills));
 SELECT setval('skills_listing_id_seq', 21);
 SELECT setval('users_id_seq', (SELECT COALESCE(MAX(id), 1) FROM users));
--- Add constraints and indexes
+
 ALTER TABLE ONLY customer
     ADD CONSTRAINT customer_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY orders
@@ -133,7 +133,7 @@ ALTER TABLE ONLY customer
     ADD CONSTRAINT ukj7ja2xvrxudhvssosd4nu1o92 UNIQUE (user_id);
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
--- Add foreign key constraints
+
 ALTER TABLE ONLY skills_listing
     ADD CONSTRAINT fk1l47xnxs48mc7pbw2ownby0vt FOREIGN KEY (skills_id) REFERENCES skills(id);
 ALTER TABLE ONLY seller
