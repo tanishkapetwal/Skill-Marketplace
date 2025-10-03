@@ -126,19 +126,6 @@ public class SellerService {
                 "Team TechMate");
         return emailDetails;
     }
-    private static EmailDetails getSellerEmailDetails(String email) {
-        EmailDetails emailDetails = new EmailDetails();
-
-
-        emailDetails.setRecipient(email);
-        emailDetails.setSubject("Order Request for you has been Received");
-        emailDetails.setMsgBody("Dear "+ ",\n Seller " +
-                "You have a new order.\n Please check your account\n"+
-
-                "\n\n Best Regards\n" +
-                "Team TechMate");
-        return emailDetails;
-    }
 
     public List<SellerResponseDto> getSellers() {
         return (sellerRepo.findAll().stream().map
