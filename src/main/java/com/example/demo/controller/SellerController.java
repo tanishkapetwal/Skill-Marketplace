@@ -82,7 +82,12 @@ public class SellerController {
     public void resetSellerPassword(@RequestBody String email) {
         resetPasswordService.resetPasswordForCurrentUser(email);
     }
-
+    @PostMapping("/set-password")
+    public void setNewPassword(@RequestBody LoginUserDto loginUserDto) {
+        String email = loginUserDto.getEmail();
+        String newPass = loginUserDto.getPassword();
+        resetPasswordService.setNewPassword(email,newPass);
+    }
     @GetMapping("/order-request")
     public ResponseEntity<List<SellerOrdersDTO>> allOrderRequest(HttpServletRequest request){
         userId = getUserId(request);

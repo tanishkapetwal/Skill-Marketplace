@@ -40,6 +40,7 @@ public class ResetPasswordService {
         if (user == null) {
             throw new UsernameNotFoundException("User not available");
         }
+
         String newPassword = generateRandomPassword(10);
         user.setPassword(passwordEncoder.encode(newPassword));
         try {
@@ -47,10 +48,28 @@ public class ResetPasswordService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        String str="";
         try {
             EmailDetails emailDetails = getResetEmailDetails(newPassword,user);
-            str = emailService.sendSimpleMail(emailDetails);
+            emailService.sendSimpleMail(emailDetails);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Transactional
+    public void setNewPassword(String email,String newPass) {
+        User user = userRepo.findByEmail(email).orElseThrow();
+        if (user == null) {
+            throw new UsernameNotFoundException("User not available");
+        }
+        user.setPassword(passwordEncoder.encode(newPass));
+        try {
+            userRepo.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            EmailDetails emailDetails = getResetEmailDetails(newPass,user);
+            emailService.sendSimpleMail(emailDetails);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
