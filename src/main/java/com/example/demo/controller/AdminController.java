@@ -34,7 +34,8 @@ import java.util.Map;
 
 @RequestMapping("/admin")
 public class AdminController {
-
+    @Autowired
+    ResetPasswordService resetPasswordService;
     @Autowired
     private final AdminService adminService;
     @Autowired
@@ -50,6 +51,10 @@ public class AdminController {
     @Autowired
     private final UserDetailsService userDetailsService;
 
+    @PostMapping("/reset-password")
+    public void resetSellerPassword(@RequestBody String email) {
+        resetPasswordService.resetPasswordForCurrentUser(email);
+    }
     @PostMapping("/add-skills")
     public ResponseEntity<Skills> addSkills(@RequestBody Skills skill){
         return new ResponseEntity<>(skillsService.addSkills(skill), HttpStatus.OK);

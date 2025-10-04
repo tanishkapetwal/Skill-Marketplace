@@ -35,7 +35,7 @@ public class SecurityConfiguration {
         http.csrf(csrf->csrf.disable())
                 .cors(cors->{})
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/ws/**","/login", "/customer/signup","/logout", "/seller/signup","/customer/refresh").permitAll()
+                        .requestMatchers("/ws/**","/login", "/customer/signup","/logout", "/seller/signup","/customer/refresh","/seller/reset-password").permitAll()
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

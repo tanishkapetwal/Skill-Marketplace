@@ -8,6 +8,7 @@ import com.example.demo.model.type.Status;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.security.JWTService;
 import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.ResetPasswordService;
 import com.example.demo.service.SellerService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,8 @@ import java.util.Map;
 @RequestMapping("/seller")
 @RequiredArgsConstructor
 public class SellerController {
-
+    @Autowired
+    private ResetPasswordService resetPasswordService;
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
@@ -75,6 +77,10 @@ public class SellerController {
         userId = getUserId(request);
         sellerservice.addSkillsListing(skillId, createListingDTO, userId);
         return  ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @PostMapping("/reset-password")
+    public void resetSellerPassword(@RequestBody String email) {
+        resetPasswordService.resetPasswordForCurrentUser(email);
     }
 
     @GetMapping("/order-request")

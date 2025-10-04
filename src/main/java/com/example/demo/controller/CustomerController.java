@@ -6,10 +6,7 @@ import com.example.demo.model.Skills;
 import com.example.demo.model.SkillsListing;
 import com.example.demo.model.User;
 import com.example.demo.security.JWTService;
-import com.example.demo.service.AuthenticationService;
-import com.example.demo.service.CustomerService;
-import com.example.demo.service.SellerService;
-import com.example.demo.service.SkillsListingService;
+import com.example.demo.service.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +35,8 @@ import static java.time.LocalDate.*;
 @RequestMapping("/customer")
 @RequiredArgsConstructor
 public class CustomerController {
-
+    @Autowired
+    ResetPasswordService resetPasswordService;
     @Autowired
     private final AuthenticationService authenticationService;
     @Autowired
@@ -66,7 +64,10 @@ public class CustomerController {
         userId = getUserId(request);
         return service.getCustomerbyId(userId);
     }
-
+    @PostMapping("/reset-password")
+    public void resetSellerPassword(@RequestBody String email) {
+        resetPasswordService.resetPasswordForCurrentUser(email);
+    }
     @GetMapping("/skills")
     public Page<SkillsListingDTO> getallskills(@RequestParam int page, Pageable pageable) {
         return service.getallskills(pageable,page);
