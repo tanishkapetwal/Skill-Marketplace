@@ -10,6 +10,9 @@ public class RegisterSellerDto {
     @NotNull
     private String name;
     @NotNull
+
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$",
+            message = "Invalid email format")
     private String email;
     @NotNull
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{8,20}$",

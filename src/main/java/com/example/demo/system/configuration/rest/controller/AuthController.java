@@ -39,11 +39,17 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     @PostMapping("/customer/signup")
     public ResponseEntity<?> addCustomers(@Valid  @RequestBody RegisterCustomerDto registerUserDto, HttpServletResponse response){
-        User registeredUser = authenticationService.signup(registerUserDto);
-        LoginUserDto loginUserDto= new LoginUserDto();
-        loginUserDto.setEmail(registeredUser.getEmail());
-        loginUserDto.setPassword(registerUserDto.getPassword());
-        return ResponseEntity.ok().body(loginUserDto);
+        try{
+            User registeredUser = authenticationService.signup(registerUserDto);
+            LoginUserDto loginUserDto= new LoginUserDto();
+            loginUserDto.setEmail(registeredUser.getEmail());
+            loginUserDto.setPassword(registerUserDto.getPassword());
+            return ResponseEntity.ok().body(loginUserDto);
+        }
+        catch (Exception e) {
+           return ResponseEntity.badRequest().body(e);
+        }
+
     }
     @PostMapping("/seller/signup")
     public ResponseEntity<?> addSeller(@Valid @RequestBody RegisterSellerDto registerSellerDto,HttpServletResponse response) {
