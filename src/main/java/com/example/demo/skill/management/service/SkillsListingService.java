@@ -1,12 +1,10 @@
 package com.example.demo.skill.management.service;
 
-import com.example.demo.skill.management.mapper.SkillMapper;
 import com.example.demo.system.configuration.exception.ResourceNotFoundException;
 import com.example.demo.skill.management.model.SkillsListing;
 import com.example.demo.skill.management.repository.SkillsListingRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 

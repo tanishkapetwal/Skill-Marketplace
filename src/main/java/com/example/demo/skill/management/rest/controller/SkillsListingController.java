@@ -3,10 +3,9 @@ package com.example.demo.skill.management.rest.controller;
 import com.example.demo.skill.management.model.SkillsListing;
 import com.example.demo.skill.management.service.SkillsListingService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+
 @RestController
 @RequestMapping("/skills-listings")
 public class SkillsListingController {

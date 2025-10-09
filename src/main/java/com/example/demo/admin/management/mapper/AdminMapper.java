@@ -1,21 +1,17 @@
 package com.example.demo.admin.management.mapper;
 
-import com.example.demo.admin.management.service.AdminService;
 import com.example.demo.system.configuration.dto.CustomerResponseDto;
 import com.example.demo.system.configuration.dto.RegisterCustomerDto;
 import com.example.demo.system.configuration.dto.RegisterSellerDto;
-import com.example.demo.seller.management.service.SellerService;
 import com.example.demo.system.configuration.constant.Role;
-import com.example.demo.customer.managment.service.CustomerService;
 import com.example.demo.system.configuration.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AdminMapper {
 

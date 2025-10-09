@@ -1,10 +1,7 @@
 package com.example.demo.system.configuration.service.impl;
 
-import com.example.demo.system.configuration.dto.LoginUserDto;
 import com.example.demo.system.configuration.dto.RegisterSellerDto;
-
 import com.example.demo.system.configuration.dto.RegisterCustomerDto;
-
 import com.example.demo.system.configuration.exception.UserNotFoundException;
 import com.example.demo.customer.managment.model.Customer;
 import com.example.demo.seller.management.model.Seller;
@@ -15,11 +12,6 @@ import com.example.demo.seller.management.repository.SellerRepo;
 import com.example.demo.system.configuration.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

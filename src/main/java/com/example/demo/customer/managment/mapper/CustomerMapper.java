@@ -5,11 +5,10 @@ import com.example.demo.system.configuration.dto.CustomerResponseDto;
 import com.example.demo.system.configuration.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class CustomerMapper {
     private final ModelMapper modelMapper;

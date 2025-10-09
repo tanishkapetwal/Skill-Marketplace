@@ -7,14 +7,12 @@ import com.example.demo.system.configuration.model.User;
 import com.example.demo.system.configuration.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor

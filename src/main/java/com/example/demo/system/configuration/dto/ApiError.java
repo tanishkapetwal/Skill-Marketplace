@@ -2,7 +2,6 @@ package com.example.demo.system.configuration.dto;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
-
 import java.time.LocalDateTime;
 
 @Data

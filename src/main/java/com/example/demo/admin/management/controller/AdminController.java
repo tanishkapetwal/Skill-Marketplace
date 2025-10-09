@@ -1,6 +1,5 @@
 package com.example.demo.admin.management.controller;
 
-
 import com.example.demo.admin.management.mapper.AdminMapper;
 import com.example.demo.admin.management.service.AdminService;
 import com.example.demo.customer.managment.service.CustomerService;
@@ -22,14 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @RestController
-
 @RequestMapping("/admin")
 public class AdminController {
 

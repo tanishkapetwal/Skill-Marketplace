@@ -1,4 +1,5 @@
 package com.example.demo.system.configuration.security;
+
 import com.example.demo.system.configuration.service.impl.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
+
 @Service
 @RequiredArgsConstructor
 public class JWTService {

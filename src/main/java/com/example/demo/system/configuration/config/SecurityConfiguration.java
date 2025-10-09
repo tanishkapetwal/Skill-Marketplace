@@ -3,7 +3,6 @@ package com.example.demo.system.configuration.config;
 import com.example.demo.system.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.system.configuration.security.JWTService;
 import com.example.demo.system.configuration.security.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class SecurityConfiguration {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtService);
         customAuthenticationFilter.setFilterProcessesUrl("/login"); // optional, default is /login
         http.csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**", "/login", "/customer/signup", "/logout", "/seller/signup",
                                 "/customer/refresh","/reset-password","/set-password").permitAll()

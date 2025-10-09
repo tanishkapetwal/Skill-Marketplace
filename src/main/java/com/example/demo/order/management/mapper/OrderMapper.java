@@ -2,18 +2,13 @@ package com.example.demo.order.management.mapper;
 
 import com.example.demo.order.management.dto.AllOrderResponse;
 import com.example.demo.order.management.dto.CreateOrderDTO;
-import com.example.demo.order.management.dto.CustomerAllOrderDTO;
 import com.example.demo.order.management.model.Orders;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Component
+@Service
 @RequiredArgsConstructor
 public class OrderMapper {
 

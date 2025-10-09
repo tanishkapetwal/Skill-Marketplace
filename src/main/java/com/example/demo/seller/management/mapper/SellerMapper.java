@@ -4,7 +4,6 @@ import com.example.demo.order.management.dto.SellerRequestedOrdersDTO;
 import com.example.demo.order.management.model.Orders;
 import com.example.demo.seller.management.model.Seller;
 import com.example.demo.seller.management.repository.SellerRepo;
-import com.example.demo.seller.management.service.SellerService;
 import com.example.demo.skill.management.dto.CreateListingDTO;
 import com.example.demo.skill.management.dto.SkillsListingDTO;
 import com.example.demo.skill.management.dto.SkillsResponseDTO;
@@ -17,7 +16,6 @@ import com.example.demo.system.configuration.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

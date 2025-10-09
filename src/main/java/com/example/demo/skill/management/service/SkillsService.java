@@ -5,7 +5,6 @@ import com.example.demo.skill.management.model.Skills;
 import com.example.demo.skill.management.repository.SkillsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 

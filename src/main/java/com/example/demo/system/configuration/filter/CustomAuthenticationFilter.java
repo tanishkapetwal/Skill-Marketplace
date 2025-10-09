@@ -1,6 +1,5 @@
 package com.example.demo.system.configuration.filter;
 
-
 import com.example.demo.system.configuration.dto.LoginResponse;
 import com.example.demo.system.configuration.security.JWTService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

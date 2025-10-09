@@ -1,8 +1,6 @@
 package com.example.demo.order.management.service;
 
-import com.example.demo.order.management.dto.CreateOrderDTO;
 import com.example.demo.order.management.model.Orders;
-
 import java.util.List;
 
 public interface OrdersService {

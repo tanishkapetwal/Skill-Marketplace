@@ -1,7 +1,6 @@
 package com.example.demo.customer.managment.service;
 
 import java.util.List;
-
 import com.example.demo.customer.managment.mapper.CustomerMapper;
 import com.example.demo.customer.managment.model.Customer;
 import com.example.demo.order.management.model.Orders;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-
 import com.example.demo.customer.managment.repository.CustomerRepo;
 import com.example.demo.order.management.repository.OrdersRepo;
 import com.example.demo.skill.management.repository.SkillsListingRepo;

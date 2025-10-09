@@ -6,7 +6,6 @@ import com.example.demo.order.management.repository.OrdersRepo;
 import com.example.demo.seller.management.mapper.SellerMapper;
 import com.example.demo.seller.management.model.Seller;
 import com.example.demo.seller.management.repository.SellerRepo;
-import com.example.demo.skill.management.dto.CreateListingDTO;
 import com.example.demo.skill.management.dto.SkillsListingDTO;
 import com.example.demo.skill.management.dto.SkillsResponseDTO;
 import com.example.demo.skill.management.model.SkillsListing;
@@ -15,19 +14,14 @@ import com.example.demo.skill.management.repository.SkillsRepo;
 import com.example.demo.system.configuration.dto.SellerResponseDto;
 import com.example.demo.system.configuration.email.management.dto.Notification;
 import com.example.demo.system.configuration.email.management.model.EmailDetails;
-import com.example.demo.system.configuration.exception.ResourceNotFoundException;
-
 import com.example.demo.order.management.constant.Status;
-
 import com.example.demo.system.configuration.email.management.service.impl.EmailServiceImpl;
 import com.example.demo.system.configuration.model.User;
 import com.example.demo.system.configuration.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

@@ -1,6 +1,5 @@
 package com.example.demo.system.configuration.rest.controller;
 
-import com.example.demo.system.configuration.dto.LoginUserDto;
 import com.example.demo.system.configuration.security.JWTService;
 import com.example.demo.system.configuration.service.impl.ResetPasswordService;
 import lombok.RequiredArgsConstructor;
