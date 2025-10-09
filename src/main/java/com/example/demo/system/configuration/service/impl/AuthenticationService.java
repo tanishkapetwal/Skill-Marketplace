@@ -48,11 +48,16 @@ public class AuthenticationService {
         user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 
-        User savedUser = userRepo.save(user);
-        cust.setUser(savedUser);
-        customerRepo.save(cust);
-        return savedUser;
+        try{
 
+          User savedUser = userRepo.save(user);
+          cust.setUser(savedUser);
+          customerRepo.save(cust);
+          return savedUser;
+
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
     }
 
     public User signupSeller(RegisterSellerDto input) {
