@@ -1,5 +1,19 @@
-Frontend essentials(Angular 20, node 20, npm 10):-
+spring initializer:-
 
-npm install
-npm install jwt-decode
-npm install @angular/material @angular/cdk
+spring web
+spring data jpa
+postgreSql driver
+spring boot devtools
+lombok
+spring security
+
+
+manual:-
+
+spring boot actuator
+spring boot starter validation
+modelMapper
+jjwt
+spring security config
+spring boot starter websocket
+spring boot starter mail
