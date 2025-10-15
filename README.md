@@ -17,3 +17,14 @@ jjwt,
 spring security config,
 spring boot starter websocket,
 spring boot starter mail
+
+
+
+
+So every manually added dependency should have no specific version mentioned in code except the library dependencies like jjwt and model mapper
+
+
+
+
+
+
